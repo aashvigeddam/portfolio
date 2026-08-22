@@ -50,7 +50,8 @@ nav a:hover{opacity:1;text-decoration:underline;text-underline-offset:5px}
 
 .device{cursor:pointer}
 .device .frame{position:absolute;inset:0;z-index:2;pointer-events:none}
-.device .screen{position:absolute;z-index:1;object-fit:cover}
+.device .screen{position:absolute;z-index:1;background:#0b0b0c;overflow:hidden}
+.device .screen video{width:100%;height:100%;object-fit:cover;display:block}
 
 .credit{position:fixed;bottom:26px;left:0;right:0;text-align:center;
   font-size:13px;letter-spacing:.08em;text-shadow:0 1px 8px rgba(0,0,0,.5);z-index:5}
@@ -128,7 +129,7 @@ const LAYOUT = {
   "doodle-sun":     {x: 842, y: 262, w:  72, h:  72, r:  0},
   "doodle-airplane":{x: 823, y: 370, w: 116, h:  74, r: -4},
   "doodle-vinyl":   {x: 845, y: 492, w:  72, h:  72, r:  0},
-  "device":         {x: 960, y: 175, w: 300, h: 175, r:  0},
+  "device":         {x: 960, y: 180, w: 300, h: 167, r:  0},
   "label-exp":      {x: 960, y: 368, w: 300, h:  30, r:  0},
   "certstack":      {x: 970, y: 420, w: 250, h: 240, r:  0},
   "label-cert":     {x: 960, y: 672, w: 280, h:  30, r:  0},
@@ -151,9 +152,9 @@ const ASSETS = {
   "doodle-dragonfly": "assets/doodle-dragonfly.png",
   "photo": null, "scrap-hi": null, "scrap-welcome": null,
   "certstack": null, "soc-li": null, "soc-gh": null,
-  deviceFrame: null,        /* assets/camera.png  — transparent-screen device body */
+  deviceFrame: "assets/camera.png",
   deviceVideo: null,        /* assets/experience-demo.mp4 */
-  deviceScreen: {x: 0.04, y: 0.10, w: 0.62, h: 0.80},
+  deviceScreen: {x: 0.0387, y: 0.0813, w: 0.6218, h: 0.8373},
 };
 
 for (const [id, p] of Object.entries(LAYOUT)) {
@@ -176,23 +177,28 @@ function fit(){
 }
 addEventListener("resize", fit); fit();
 
-if (ASSETS.deviceFrame && ASSETS.deviceVideo) {
+if (ASSETS.deviceFrame) {
   const d = document.getElementById("device"), s = ASSETS.deviceScreen;
   d.innerHTML =
-    '<video class="screen" muted loop playsinline preload="metadata" style="left:' +
-    (s.x*100) + '%;top:' + (s.y*100) + '%;width:' + (s.w*100) + '%;height:' + (s.h*100) +
-    '%" src="' + ASSETS.deviceVideo + '"></video>' +
+    '<div class="screen" style="left:' +
+    (s.x*100) + '%;top:' + (s.y*100) + '%;width:' + (s.w*100) + '%;height:' + (s.h*100) + '%">' +
+    (ASSETS.deviceVideo
+      ? '<video muted loop playsinline preload="metadata" src="' + ASSETS.deviceVideo + '"></video>'
+      : '') +
+    '</div>' +
     '<img class="frame" src="' + ASSETS.deviceFrame + '" alt="">';
   const v = d.querySelector("video");
-  if (matchMedia("(hover:hover)").matches) {
-    d.addEventListener("mouseenter", () => v.play());
-    d.addEventListener("mouseleave", () => v.pause());
-  } else {
-    d.addEventListener("click", () => v.paused ? v.play() : v.pause());
+  if (v) {
+    if (matchMedia("(hover:hover)").matches) {
+      d.addEventListener("mouseenter", () => v.play());
+      d.addEventListener("mouseleave", () => v.pause());
+    } else {
+      d.addEventListener("click", () => v.paused ? v.play() : v.pause());
+    }
+    d.addEventListener("keydown", e => {
+      if (e.key === "Enter" || e.key === " ") { e.preventDefault(); v.paused ? v.play() : v.pause(); }
+    });
   }
-  d.addEventListener("keydown", e => {
-    if (e.key === "Enter" || e.key === " ") { e.preventDefault(); v.paused ? v.play() : v.pause(); }
-  });
 }
 </script>
 </body>
