@@ -188,7 +188,7 @@ if (ASSETS.notebookOpen) {
   const tilt = "rotate(" + LAYOUT.notebook.r + "deg)";
   new Image().src = ASSETS.notebookOpen;  /* preload so the swap is instant */
   nb.style.transition = "transform .25s ease";
-  const open = () => { img.src = ASSETS.notebookOpen; nb.style.transform = tilt + " scale(1.7)"; nb.style.zIndex = 6; };
+  const open = () => { img.src = ASSETS.notebookOpen; nb.style.transform = "rotate(-25deg) scale(1.7)"; nb.style.zIndex = 6; };
   const shut = () => { img.src = ASSETS.notebook; nb.style.transform = tilt; nb.style.zIndex = ""; };
   if (matchMedia("(hover:hover)").matches) {
     nb.addEventListener("mouseenter", open);
