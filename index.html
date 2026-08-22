@@ -172,6 +172,15 @@ for (const [id, p] of Object.entries(LAYOUT)) {
   }
 }
 
+/* background video: play at a fraction of real speed */
+const bgv = document.querySelector(".bg video");
+if (bgv) {
+  const SLOW = 0.35;
+  bgv.defaultPlaybackRate = SLOW;
+  bgv.playbackRate = SLOW;
+  bgv.addEventListener("play", () => { bgv.playbackRate = SLOW; });
+}
+
 /* notebook: closed -> open on hover, slightly larger, same tilt */
 if (ASSETS.notebookOpen) {
   const nb = document.getElementById("notebook");
