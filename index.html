@@ -143,6 +143,7 @@ const ASSETS = {
   bg: "assets/sf-background.mp4",
   bgPoster: "assets/sf-poster.jpg",
   "notebook": "assets/notebook.png",
+  notebookOpen: "assets/notebook-open.png",  /* hover swap on #notebook */
   "doodle-sun": "assets/doodle-sun.png",
   "doodle-airplane": "assets/doodle-airplane.png",
   "doodle-bouquet": "assets/doodle-bouquet.png",
@@ -168,6 +169,23 @@ for (const [id, p] of Object.entries(LAYOUT)) {
   if (ASSETS[id]) {
     const img = '<img src="' + ASSETS[id] + '" alt="">';
     el.innerHTML = p.href ? '<a href="' + p.href + '">' + img + "</a>" : img;
+  }
+}
+
+/* notebook: closed -> open on hover, slightly larger, same tilt */
+if (ASSETS.notebookOpen) {
+  const nb = document.getElementById("notebook");
+  const img = nb.querySelector("img");
+  const tilt = "rotate(" + LAYOUT.notebook.r + "deg)";
+  new Image().src = ASSETS.notebookOpen;  /* preload so the swap is instant */
+  nb.style.transition = "transform .25s ease";
+  const open = () => { img.src = ASSETS.notebookOpen; nb.style.transform = tilt + " scale(1.7)"; nb.style.zIndex = 6; };
+  const shut = () => { img.src = ASSETS.notebook; nb.style.transform = tilt; nb.style.zIndex = ""; };
+  if (matchMedia("(hover:hover)").matches) {
+    nb.addEventListener("mouseenter", open);
+    nb.addEventListener("mouseleave", shut);
+  } else {
+    nb.addEventListener("click", () => nb.dataset.open ? (delete nb.dataset.open, shut()) : (nb.dataset.open = 1, open()));
   }
 }
 
