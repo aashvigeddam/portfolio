@@ -107,6 +107,7 @@ nav a:hover{opacity:1;text-decoration:underline;text-underline-offset:5px}
   <div class="item" id="soc-mail"></div>
   <div class="item" id="soc-li"><div class="ph">LI</div></div>
   <div class="item" id="soc-gh"><div class="ph">GH</div></div>
+  <div class="item" id="soc-ig"></div>
 </div>
 
 <script>
@@ -125,9 +126,12 @@ const LAYOUT = {
   "label-exp":      {x: 960, y: 382, w: 300, h:  30, r:  0},
   "certstack":      {x: 970, y: 420, w: 250, h: 240, r:  0},
   "label-cert":     {x: 960, y: 672, w: 280, h:  30, r:  0},
-  "soc-mail":       {x: 566, y: 688, w:  62, h:  49, r: -3, href: "mailto:aashvi.geddam@gmail.com"},
-  "soc-li":         {x: 649, y: 686, w:  50, h:  52, r:  2, href: "https://www.linkedin.com/in/aashvi-geddam"},
-  "soc-gh":         {x: 717, y: 687, w:  50, h:  51, r: -2, href: "https://github.com/aashvigeddam"},
+  /* charm boxes sized so the icon BODIES render equal — each PNG carries a
+     different amount of clasp/dangle around the body */
+  "soc-mail":       {x: 530, y: 690, w:  57, h:  45, r: -3, href: "mailto:aashvi.geddam@gmail.com"},
+  "soc-li":         {x: 602, y: 683, w:  56, h:  58, r:  2, href: "https://www.linkedin.com/in/aashvi-geddam"},
+  "soc-gh":         {x: 672, y: 681, w:  61, h:  63, r: -2, href: "https://github.com/aashvigeddam"},
+  "soc-ig":         {x: 745, y: 684, w:  58, h:  57, r:  3, href: null},
 };
 
 const ASSETS = {
@@ -142,6 +146,7 @@ const ASSETS = {
   "soc-mail": "assets/soc-mail.png",
   "soc-li": "assets/soc-li.png",
   "soc-gh": "assets/soc-gh.png",
+  "soc-ig": "assets/soc-ig.png",
   /* pending — leave null until the files exist: */
   "doodle-dragonfly": "assets/doodle-dragonfly.png",
   "photo": "assets/photo.png",
