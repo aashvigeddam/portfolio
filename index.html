@@ -49,6 +49,58 @@ nav a:hover{opacity:1;text-decoration:underline;text-underline-offset:5px}
 .doorlabel{font-size:22px;letter-spacing:.14em;text-transform:uppercase;
   text-align:center;text-shadow:0 1px 10px rgba(0,0,0,.4)}
 
+/* ---- skills charm cluster ----------------------------------------
+   A compact pile of enamel-charm skill icons (see SKILLS array).
+   Hovering the pile loosens it outward; hovering one charm pulls it
+   out of the pile. Wrappers (.skill) never move — only the inner
+   .charm animates — so hit areas stay stable while charms travel. */
+#skills .skill{position:absolute;display:flex;align-items:center;justify-content:center;
+  padding:9px;outline:none}
+#skills .charm{position:relative;width:100%;height:100%;
+  background:linear-gradient(160deg,#f8f4e9 0%,#efe9da 55%,#e3dcc9 100%);
+  border:2px solid #bfb8a6;
+  box-shadow:0 1px 2px rgba(60,50,35,.28), 0 5px 10px rgba(60,50,35,.18),
+    inset 0 1px 0 rgba(255,255,255,.85), inset 0 -2px 3px rgba(120,105,80,.18);
+  transform:rotate(var(--r)) ;
+  transition:transform var(--dur,.38s) cubic-bezier(.32,1.28,.46,1);
+  will-change:transform}
+#skills .charm .ink{position:absolute;inset:19%;background:var(--ink-c);
+  -webkit-mask-size:contain;-webkit-mask-position:center;-webkit-mask-repeat:no-repeat;
+  mask-size:contain;mask-position:center;mask-repeat:no-repeat}
+#skills .charm::after{content:"";position:absolute;left:12%;right:45%;top:6%;height:14%;
+  border-radius:999px;background:linear-gradient(rgba(255,255,255,.55),rgba(255,255,255,0));
+  pointer-events:none}
+/* group hover: the pile breathes open */
+@media (hover:hover){
+  #skills:hover .charm{transform:translate(var(--sx),var(--sy)) rotate(var(--r))}
+  #skills .skill:hover .charm,#skills .skill:focus-visible .charm{
+    transform:translate(calc(var(--sx) + var(--hx)),calc(var(--sy) + var(--hy)))
+      rotate(var(--rh)) scale(1.05);
+    box-shadow:0 2px 3px rgba(60,50,35,.3), 0 10px 18px rgba(60,50,35,.24),
+      inset 0 1px 0 rgba(255,255,255,.85), inset 0 -2px 3px rgba(120,105,80,.18)}
+}
+#skills .skill:hover,#skills .skill:focus-visible{z-index:30}
+/* touch: tapped charm pulls out the same way */
+#skills .skill.picked .charm{transform:translate(var(--hx),var(--hy)) rotate(var(--rh)) scale(1.05)}
+#skills .skill.picked{z-index:30}
+/* tiny paper label */
+#skills .tag{position:absolute;top:calc(100% - 2px);left:50%;
+  transform:translateX(-50%) translateY(5px) rotate(-2deg);
+  font-family:Georgia,"Times New Roman",serif;font-style:italic;font-size:11.5px;
+  letter-spacing:.03em;color:#4d5866;white-space:nowrap;
+  background:linear-gradient(#faf7ee,#f0ebdd);border:1px solid #d5cebc;
+  padding:2px 8px 3px;box-shadow:0 2px 5px rgba(60,50,35,.2);
+  opacity:0;pointer-events:none;
+  transition:opacity .28s ease,transform .28s cubic-bezier(.32,1.28,.46,1)}
+#skills .skill:hover .tag,#skills .skill:focus-visible .tag,#skills .skill.picked .tag{
+  opacity:1;transform:translateX(-50%) translateY(0) rotate(-2deg)}
+@media (prefers-reduced-motion:reduce){
+  #skills .charm,#skills .tag{transition:opacity .2s ease}
+  #skills:hover .charm{transform:rotate(var(--r))}
+  #skills .skill:hover .charm,#skills .skill:focus-visible .charm,#skills .skill.picked .charm{
+    transform:rotate(var(--r))}
+}
+
 .device{cursor:pointer}
 .device .frame{position:absolute;inset:0;z-index:2;pointer-events:none}
 .device .screen{position:absolute;z-index:1;background:#0b0b0c;overflow:hidden}
@@ -101,8 +153,8 @@ nav a:hover{opacity:1;text-decoration:underline;text-underline-offset:5px}
   </div>
   <div class="item doorlabel" id="label-exp">Experience</div>
 
-  <div class="item" id="certstack"><div class="ph">CERTIFICATE FAN</div></div>
-  <div class="item doorlabel" id="label-cert">Certifications</div>
+  <div class="item" id="skills"></div>
+  <div class="item doorlabel" id="label-cert">Skills</div>
 
   <div class="item" id="soc-mail"></div>
   <div class="item" id="soc-li"><div class="ph">LI</div></div>
@@ -124,7 +176,7 @@ const LAYOUT = {
   "doodle-airplane":{x: 831, y: 382, w: 100, h: 100, r:  0},
   "device":         {x: 960, y: 176, w: 300, h: 198, r:  0},
   "label-exp":      {x: 960, y: 382, w: 300, h:  30, r:  0},
-  "certstack":      {x: 970, y: 420, w: 250, h: 240, r:  0},
+  "skills":         {x: 950, y: 415, w: 290, h: 250, r:  0},
   "label-cert":     {x: 960, y: 672, w: 280, h:  30, r:  0},
   /* charm boxes sized so the icon BODIES render equal — each PNG carries a
      different amount of clasp/dangle around the body */
@@ -151,8 +203,6 @@ const ASSETS = {
   "photo": "assets/photo.png",
   "scrap-hi": "assets/scrap-hi.png",
   "scrap-welcome": "assets/scrap-welcome.png",
-  /* pending — leave null until the files exist: */
-  "certstack": null,
   deviceFrame: "assets/camera.png",
   deviceVideo: "assets/experience-demo.mp4",
   deviceScreen: {x: 0.0762, y: 0.3195, w: 0.4721, h: 0.5320},
@@ -193,6 +243,74 @@ if (ASSETS.notebookOpen) {
     nb.addEventListener("mouseleave", shut);
   } else {
     nb.addEventListener("click", () => nb.dataset.open ? (delete nb.dataset.open, shut()) : (nb.dataset.open = 1, open()));
+  }
+}
+
+/* ---- skills charm cluster ----------------------------------------
+   Add / remove / reorder skills here. Coordinates are the charm's
+   CENTER inside the #skills box (see LAYOUT.skills for the box).
+     size    charm width/height in px
+     shape   "square" (rounded) or "circle"
+     r       resting tilt; hovering straightens toward a third of it
+     spread  how far it drifts when the pile is hovered (from center)
+     pull    extra travel when this charm itself is hovered
+     z       resting stack order (higher = on top of the pile)      */
+const SKILLS = [
+  {name:"GitHub",  icon:"assets/icons/github.svg",  color:"#565760", cx: 98, cy: 76, size:66, shape:"square", r:-5, spread:[-13,-12], pull:[-8,-7], z:3},
+  {name:"Figma",   icon:"assets/icons/figma.svg",   color:"#b06a4f", cx:154, cy: 62, size:58, shape:"circle", r: 4, spread:[  2,-16], pull:[ 1,-9], z:2},
+  {name:"Canva",   icon:"assets/icons/canva.svg",   color:"#4f8e96", cx:202, cy: 92, size:64, shape:"square", r:-3, spread:[ 14, -8], pull:[ 9,-5], z:4},
+  {name:"Google tools", icon:"assets/icons/google.svg", color:"#7e97b3", cx: 78, cy:132, size:60, shape:"circle", r: 3, spread:[-17,  2], pull:[-9, 1], z:2},
+  {name:"Claude",  icon:"assets/icons/claude.svg",  color:"#c08460", cx:143, cy:124, size:68, shape:"square", r:-2, spread:[ -1,  1], pull:[ 0, 2], z:6},
+  {name:"ChatGPT", icon:"assets/icons/chatgpt.svg", color:"#7a8f83", cx:205, cy:152, size:60, shape:"circle", r: 5, spread:[ 15,  7], pull:[ 8, 5], z:3},
+  {name:"Excel",   icon:"assets/icons/excel.svg",   color:"#6f8a6b", cx:110, cy:178, size:63, shape:"square", r:-4, spread:[ -9, 14], pull:[-5, 8], z:4},
+];
+
+const skillsBox = document.getElementById("skills");
+if (skillsBox) {
+  const PADW = 9;  /* .skill padding — keeps the hit area a ring larger than the charm */
+  SKILLS.forEach((s, i) => {
+    const w = document.createElement("div");
+    w.className = "skill";
+    w.tabIndex = 0;
+    w.setAttribute("role", "img");
+    w.setAttribute("aria-label", s.name);
+    const box = s.size + PADW * 2;
+    w.style.left = (s.cx - box / 2) + "px";
+    w.style.top = (s.cy - box / 2) + "px";
+    w.style.width = box + "px";
+    w.style.height = box + "px";
+    w.style.zIndex = s.z;
+    w.style.setProperty("--r", s.r + "deg");
+    w.style.setProperty("--rh", (s.r / 3).toFixed(1) + "deg");
+    w.style.setProperty("--sx", s.spread[0] + "px");
+    w.style.setProperty("--sy", s.spread[1] + "px");
+    w.style.setProperty("--hx", s.pull[0] + "px");
+    w.style.setProperty("--hy", s.pull[1] + "px");
+    w.style.setProperty("--dur", (0.34 + (i % 4) * 0.035).toFixed(3) + "s");
+    const c = document.createElement("div");
+    c.className = "charm";
+    c.style.borderRadius = s.shape === "circle" ? "50%" : "22%";
+    const ink = document.createElement("div");
+    ink.className = "ink";
+    ink.style.setProperty("--ink-c", s.color);
+    ink.style.background = s.color;
+    ink.style.webkitMaskImage = "url('" + s.icon + "')";
+    ink.style.maskImage = "url('" + s.icon + "')";
+    const tag = document.createElement("span");
+    tag.className = "tag";
+    tag.textContent = s.name;
+    c.appendChild(ink);
+    w.appendChild(c);
+    w.appendChild(tag);
+    skillsBox.appendChild(w);
+  });
+  /* touch devices: tap pulls a charm out, tap elsewhere settles it back */
+  if (!matchMedia("(hover:hover)").matches) {
+    skillsBox.addEventListener("click", e => {
+      const hit = e.target.closest(".skill");
+      skillsBox.querySelectorAll(".skill.picked").forEach(el => { if (el !== hit) el.classList.remove("picked"); });
+      if (hit) hit.classList.toggle("picked");
+    });
   }
 }
 
