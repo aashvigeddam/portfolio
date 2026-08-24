@@ -46,6 +46,10 @@ nav .links{position:absolute;right:44px;display:flex;gap:52px;text-transform:upp
 nav a{color:#fff;text-decoration:none;opacity:.92}
 nav a:hover{opacity:1;text-decoration:underline;text-underline-offset:5px}
 
+#whereabouts{text-align:center;font-size:13px;letter-spacing:.15em;line-height:2.05;
+  text-transform:uppercase;color:#fff;text-shadow:0 1px 10px rgba(0,0,0,.42)}
+#whereabouts span{font-size:12px;letter-spacing:.12em;opacity:.9}
+
 .doorlabel{font-size:22px;letter-spacing:.14em;text-transform:uppercase;
   text-align:center;text-shadow:0 1px 10px rgba(0,0,0,.4)}
 
@@ -141,6 +145,10 @@ nav a:hover{opacity:1;text-decoration:underline;text-underline-offset:5px}
   <div class="item" id="soc-li"><div class="ph">LI</div></div>
   <div class="item" id="soc-gh"><div class="ph">GH</div></div>
   <div class="item" id="soc-ig"></div>
+
+  <div class="item" id="whereabouts">
+    Bay Area, CA<br><span>University of Washington, Seattle</span>
+  </div>
 </div>
 
 <script>
@@ -161,10 +169,11 @@ const LAYOUT = {
   "label-cert":     {x: 960, y: 672, w: 280, h:  30, r:  0},
   /* charm boxes sized so the icon BODIES render equal — each PNG carries a
      different amount of clasp/dangle around the body */
-  "soc-mail":       {x: 533, y: 692, w:  69, h:  54, r: -3, href: "mailto:aashvi.geddam@gmail.com"},
-  "soc-ig":         {x: 636, y: 695, w:  58, h:  49, r:  2, href: "https://www.instagram.com/aashvigeddam/"},
-  "soc-gh":         {x: 716, y: 694, w:  54, h:  56, r: -2, href: "https://github.com/aashvigeddam"},
-  "soc-li":         {x: 804, y: 691, w:  57, h:  54, r:  3, href: "https://www.linkedin.com/in/aashvi-geddam"},
+  "soc-mail":       {x: 533, y: 681, w:  69, h:  54, r: -3, href: "mailto:aashvi.geddam@gmail.com"},
+  "soc-ig":         {x: 636, y: 684, w:  58, h:  49, r:  2, href: "https://www.instagram.com/aashvigeddam/"},
+  "soc-gh":         {x: 716, y: 683, w:  54, h:  56, r: -2, href: "https://github.com/aashvigeddam"},
+  "soc-li":         {x: 804, y: 680, w:  57, h:  54, r:  3, href: "https://www.linkedin.com/in/aashvi-geddam"},
+  "whereabouts":    {x: 505, y: 762, w: 380, h:  56, r:  0},
 };
 
 const ASSETS = {
