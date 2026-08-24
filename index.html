@@ -13,8 +13,13 @@
    Edit positions in LAYOUT, assets in ASSETS (bottom of file).
    ============================================================ */
 :root{ --ink:#fff; }
+@font-face{font-family:"Cedarville Cursive";src:url("assets/fonts/CedarvilleCursive.ttf") format("truetype");font-display:swap}
+@font-face{font-family:"Special Elite";src:url("assets/fonts/SpecialElite.ttf") format("truetype");font-display:swap}
 *{box-sizing:border-box;margin:0;padding:0}
-html,body{height:100%;overflow:hidden;background:#111}
+html{height:100%}
+body{min-height:100%;overflow-x:hidden;background:#111}
+@media (prefers-reduced-motion:no-preference){ html{scroll-behavior:smooth} }
+#landing{position:relative;height:100vh;overflow:hidden}
 body{font-family:"Helvetica Neue",Arial,sans-serif;color:var(--ink)}
 
 .bg{position:fixed;inset:0;z-index:0}
@@ -22,7 +27,7 @@ body{font-family:"Helvetica Neue",Arial,sans-serif;color:var(--ink)}
   filter:saturate(.7) brightness(1.15) contrast(.96)}  /* wash toward the reference grade */
 .bg .scrim{position:absolute;inset:0;background:rgba(255,255,255,.18)}
 
-#canvas{position:fixed;top:50%;left:50%;width:1440px;height:900px;
+#canvas{position:absolute;top:50%;left:50%;width:1440px;height:900px;
   transform-origin:center center;z-index:1}
 
 .item{position:absolute}
@@ -45,6 +50,12 @@ nav .mono img{height:84px;width:auto;display:block;
 nav .links{position:absolute;right:44px;display:flex;gap:52px;text-transform:uppercase}
 nav a{color:#fff;text-decoration:none;opacity:.92}
 nav a:hover{opacity:1;text-decoration:underline;text-underline-offset:5px}
+/* over the About section the fixed nav switches to the page's ink blue */
+body.on-about nav{color:#2d55a8;text-shadow:none}
+body.on-about nav a{color:#2d55a8}
+body.on-about nav a[href="#about"]{text-decoration:underline;text-underline-offset:6px}
+body.on-about nav .mono img{filter:brightness(0) saturate(100%) invert(29%) sepia(59%) saturate(1362%) hue-rotate(198deg) brightness(93%) contrast(96%)}
+nav,nav a,nav .mono img{transition:color .35s ease,filter .35s ease}
 
 #whereabouts{text-align:center;font-size:13px;letter-spacing:.15em;line-height:2.05;
   text-transform:uppercase;color:#fff;text-shadow:0 1px 10px rgba(0,0,0,.42)}
@@ -99,6 +110,37 @@ nav a:hover{opacity:1;text-decoration:underline;text-underline-offset:5px}
 }
 
 @media (prefers-reduced-motion:reduce){ .bg video{display:none} }
+
+/* ============================================================
+   ABOUT — scrapbook page. Canvas: 1672 x 941 design units
+   (the reference artwork's pixel grid), contain-scaled.
+   Positions live in ABOUT_LAYOUT at the bottom of the file.
+   ============================================================ */
+#about{position:relative;height:100vh;overflow:hidden;background:#f2efeb;z-index:1}
+#about-canvas{position:absolute;top:50%;left:50%;width:1672px;height:941px;
+  transform-origin:center center}
+.ab{position:absolute}
+.ab img{width:100%;height:100%;display:block}
+.ab-cursive{font-family:"Cedarville Cursive",cursive;color:#2d55a8}
+.ab-type{font-family:"Special Elite","Courier New",monospace;color:#3b3a37}
+.ab-cursive>svg{display:block;margin-top:2px}
+#ab-hey{font-size:64px;line-height:1;white-space:nowrap}
+#ab-hey .ab-star{position:absolute;right:-10px;top:34px}
+#ab-intro{font-size:19px;line-height:1.6}
+#ab-intro p+p{margin-top:21px}
+#ab-exp-head{font-size:46px;line-height:1;white-space:nowrap}
+#ab-exp-head .ab-star{position:absolute;right:-46px;bottom:-4px}
+#ab-exp{font-size:16.5px;line-height:1.5}
+#ab-exp .row{display:flex;gap:16px;align-items:flex-start;padding:13px 0}
+#ab-exp .row+.row{border-top:1.5px dashed rgba(70,85,120,.38)}
+#ab-exp .row svg{flex:0 0 auto;margin-top:3px}
+#ab-int-head{font-size:32px;line-height:1;white-space:nowrap}
+#ab-int{font-size:16px;line-height:1.4}
+#ab-int .row{display:flex;gap:15px;align-items:center;margin-bottom:27px}
+#ab-int .row svg{flex:0 0 auto}
+#ab-thanks{font-size:34px;line-height:1;white-space:nowrap;text-align:center}
+/* notebook is now a doorway to #about */
+#notebook a{cursor:pointer}
 </style>
 </head>
 <body>
@@ -115,10 +157,11 @@ nav a:hover{opacity:1;text-decoration:underline;text-underline-offset:5px}
   <span class="name">aashvi geddam</span>
   <span class="mono"><img src="assets/logo.png" alt="AG monogram"></span>
   <span class="links">
-    <a href="#">About</a><a href="#">Work</a><a href="#">Play</a><a href="#">Contact</a>
+    <a href="#about">About</a><a href="#">Work</a><a href="#">Play</a><a href="#">Contact</a>
   </span>
 </nav>
 
+<section id="landing">
 <div id="canvas">
   <div class="item" id="notebook"></div>
   <div class="item doorlabel" id="label-about">About Me</div>
@@ -151,11 +194,68 @@ nav a:hover{opacity:1;text-decoration:underline;text-underline-offset:5px}
     Bay Area, CA<br><span>University of Washington, Seattle</span>
   </div>
 </div>
+</section>
+
+<section id="about" aria-label="About me">
+  <div id="about-canvas">
+    <!-- paper + object layers (positions in ABOUT_LAYOUT) -->
+    <div class="ab" id="ab-center-graph" aria-hidden="true"><img src="assets/about/center-graph.png" alt=""></div>
+    <div class="ab" id="ab-graph-left"   aria-hidden="true"><img src="assets/about/graph-left.png" alt=""></div>
+    <div class="ab" id="ab-blue-strip"   aria-hidden="true"><img src="assets/about/blue-strip.png" alt=""></div>
+    <div class="ab" id="ab-fragment"     aria-hidden="true"><img src="assets/about/fragment.png" alt=""></div>
+    <div class="ab" id="ab-lace"         aria-hidden="true"><img src="assets/about/lace.png" alt=""></div>
+    <div class="ab" id="ab-intro-paper"  aria-hidden="true"><img src="assets/about/intro-paper.png" alt=""></div>
+    <div class="ab" id="ab-exp-paper"    aria-hidden="true"><img src="assets/about/exp-paper.png" alt=""></div>
+    <div class="ab" id="ab-int-paper"    aria-hidden="true"><img src="assets/about/int-paper.png" alt=""></div>
+    <div class="ab" id="ab-thanks-paper" aria-hidden="true"><img src="assets/about/thanks-paper.png" alt=""></div>
+    <div class="ab" id="ab-tape-cream"   aria-hidden="true"><img src="assets/about/tape-cream.png" alt=""></div>
+    <div class="ab" id="ab-tape-a"       aria-hidden="true"><img src="assets/about/tape-grid-a.png" alt=""></div>
+    <div class="ab" id="ab-tape-b"       aria-hidden="true"><img src="assets/about/tape-grid-b.png" alt=""></div>
+    <div class="ab" id="ab-pushpin"      aria-hidden="true"><img src="assets/about/pushpin.png" alt=""></div>
+    <div class="ab" id="ab-key"          aria-hidden="true"><img src="assets/about/key.png" alt=""></div>
+    <div class="ab" id="ab-evil-eye"     aria-hidden="true"><img src="assets/about/evil-eye.png" alt=""></div>
+    <div class="ab" id="ab-paperclip"    aria-hidden="true"><img src="assets/about/paperclip.png" alt=""></div>
+    <div class="ab" id="ab-floral"       aria-hidden="true"><img src="assets/about/floral.png" alt=""></div>
+
+    <!-- text layers: real, selectable HTML -->
+    <div class="ab ab-cursive" id="ab-hey">hey, there!
+      <svg width="330" height="16" viewBox="0 0 330 16" fill="none" aria-hidden="true">
+        <path d="M4 10 C 60 4, 150 14, 200 8 S 300 6, 326 10" stroke="#2d55a8" stroke-width="2.4" stroke-linecap="round"/>
+      </svg>
+      <svg class="ab-star" width="42" height="42" viewBox="0 0 42 42" fill="none" aria-hidden="true">
+        <path d="M21 4 L25.4 15.8 L38 16.2 L28 23.6 L31.6 35.8 L21 28.6 L10.4 35.8 L14 23.6 L4 16.2 L16.6 15.8 Z"
+          stroke="#2d55a8" stroke-width="2" stroke-linejoin="round" transform="rotate(-8 21 21)"/>
+      </svg>
+    </div>
+    <div class="ab ab-type" id="ab-intro">
+      <p>I&rsquo;m a cognitive science student interested in UI/UX and AI-human interaction.</p>
+      <p>I build projects and design experiences around those interests, along with planning events and bringing people together, especially when there&rsquo;s a larger purpose behind the work.</p>
+      <p>Whether I&rsquo;m working on a project or with a community, what matters most to me is creating something that leaves a lasting impact.</p>
+    </div>
+    <div class="ab ab-cursive" id="ab-exp-head">experience
+      <svg width="230" height="14" viewBox="0 0 230 14" fill="none" aria-hidden="true">
+        <path d="M3 8 C 50 3, 120 12, 170 7 S 215 6, 227 9" stroke="#2d55a8" stroke-width="2.2" stroke-linecap="round"/>
+      </svg>
+      <svg class="ab-star" width="30" height="30" viewBox="0 0 42 42" fill="none" aria-hidden="true">
+        <path d="M21 4 L25.4 15.8 L38 16.2 L28 23.6 L31.6 35.8 L21 28.6 L10.4 35.8 L14 23.6 L4 16.2 L16.6 15.8 Z"
+          stroke="#2d55a8" stroke-width="2.6" stroke-linejoin="round" transform="rotate(10 21 21)"/>
+      </svg>
+    </div>
+    <div class="ab ab-type" id="ab-exp"></div>
+    <div class="ab ab-cursive" id="ab-int-head">you&rsquo;ll find me...
+      <svg width="168" height="12" viewBox="0 0 200 12" fill="none" aria-hidden="true">
+        <path d="M3 7 C 45 3, 110 10, 150 6 S 190 5, 197 8" stroke="#2d55a8" stroke-width="2" stroke-linecap="round"/>
+      </svg>
+    </div>
+    <div class="ab ab-type" id="ab-int"></div>
+    <div class="ab ab-cursive" id="ab-thanks">thanks for stopping by &#9825;</div>
+  </div>
+</section>
 
 <script>
 /* canvas coordinates (1440 x 900). w/h tuned to each asset's true aspect. */
 const LAYOUT = {
-  "notebook":       {x: 237, y: 314, w: 205, h: 228, r: -2, href: null},
+  "notebook":       {x: 237, y: 314, w: 205, h: 228, r: -2, href: "#about"},
   "label-about":    {x: 230, y: 556, w: 220, h:  30, r:  0},
   "scrap-hi":       {x: 615, y: 163, w: 190, h:  89, r:  0},
   "photo":          {x: 535, y: 216, w: 320, h: 375, r:  0},
@@ -303,12 +403,90 @@ if (skillsBox) {
 }
 
 const W = 1440, H = 900;
+const AW = 1672, AH = 941;   /* about canvas design units */
 function fit(){
   const s = Math.max(innerWidth / W, innerHeight / H);
   document.getElementById("canvas").style.transform =
     "translate(-50%,-50%) scale(" + s + ")";
+  const a = Math.min(innerWidth / AW, innerHeight / AH);
+  document.getElementById("about-canvas").style.transform =
+    "translate(-50%,-50%) scale(" + a + ")";
 }
 addEventListener("resize", fit); fit();
+
+/* ---- about page ---------------------------------------------------
+   Every scrapbook piece and text block is positioned here, in the
+   1672x941 reference grid. Move/resize/rotate/restack via this table. */
+const ABOUT_LAYOUT = {
+  /* backing layers */
+  "ab-center-graph": {x: 628, y: 166, w: 484, h: 740, r: 0, z: 1},
+  "ab-graph-left":   {x:   0, y: 540, w: 260, h: 340, r: 0, z: 1},
+  "ab-blue-strip":   {x:   0, y: 700, w: 520, h: 241, r: 0, z: 1},
+  "ab-fragment":     {x: 580, y: 528, w: 378, h: 382, r: 0, z: 2},
+  "ab-lace":         {x:1086, y: 186, w: 140, h: 610, r: 0, z: 2},
+  /* papers */
+  "ab-intro-paper":  {x:  60, y: 268, w: 555, h: 522, r: 0, z: 3},
+  "ab-exp-paper":    {x: 682, y: 222, w: 470, h: 546, r: 0, z: 3},
+  "ab-int-paper":    {x:1252, y: 188, w: 296, h: 468, r: 0, z: 3},
+  "ab-thanks-paper": {x:1228, y: 730, w: 434, h: 132, r: 0, z: 3},
+  /* small objects */
+  "ab-tape-cream":   {x: 782, y: 164, w: 226, h:  74, r: 0, z: 4},
+  "ab-tape-a":       {x: 430, y: 244, w: 168, h:  78, r: 0, z: 4},
+  "ab-tape-b":       {x:1294, y: 158, w: 192, h:  72, r: 0, z: 4},
+  "ab-pushpin":      {x:  92, y: 272, w:  60, h:  58, r: 0, z: 4},
+  "ab-key":          {x: 524, y: 642, w: 138, h: 220, r: 0, z: 4},
+  "ab-evil-eye":     {x: 988, y: 718, w: 142, h: 140, r: 0, z: 4},
+  "ab-paperclip":    {x:1460, y: 164, w:  80, h: 108, r: 0, z: 4},
+  "ab-floral":       {x:1512, y: 602, w:  74, h:  66, r: 0, z: 4},
+  /* text blocks (w only; height is content) */
+  "ab-hey":          {x:  98, y: 108, w: 360, r: -2, z: 5},
+  "ab-intro":        {x: 132, y: 324, w: 372, r: 0, z: 5},
+  "ab-exp-head":     {x: 800, y: 270, w: 240, r: -1, z: 5},
+  "ab-exp":          {x: 742, y: 352, w: 388, r: 0, z: 5},
+  "ab-int-head":     {x:1302, y: 250, w: 210, r: -1, z: 5},
+  "ab-int":          {x:1300, y: 322, w: 226, r: 0, z: 5},
+  "ab-thanks":       {x:1268, y: 772, w: 366, r: -1, z: 5},
+};
+for (const [id, p] of Object.entries(ABOUT_LAYOUT)) {
+  const el = document.getElementById(id);
+  if (!el) continue;
+  el.style.left = p.x + "px"; el.style.top = p.y + "px";
+  el.style.width = p.w + "px";
+  if (p.h) el.style.height = p.h + "px";
+  el.style.transform = "rotate(" + (p.r || 0) + "deg)";
+  el.style.zIndex = p.z;
+}
+
+/* experience entries — edit here, first line company, second line role */
+const EXPERIENCE = [
+  ["Magnus United Non-profit,", "President"],
+  ["Child Rights and You (CRY),", "Stellar Hacks Operations Coordinator"],
+  ["SuiteEarth, Product Management &", "UX Intern"],
+  ["Donerds Donuts,", "Consultant"],
+  ["NYX Ventures,", "Research Intern"],
+];
+const AB_STAR = '<svg width="26" height="26" viewBox="0 0 42 42" fill="none" aria-hidden="true">' +
+  '<path d="M21 4 L25.4 15.8 L38 16.2 L28 23.6 L31.6 35.8 L21 28.6 L10.4 35.8 L14 23.6 L4 16.2 L16.6 15.8 Z"' +
+  ' stroke="#2d55a8" stroke-width="2.6" stroke-linejoin="round"/></svg>';
+const expBox = document.getElementById("ab-exp");
+if (expBox) expBox.innerHTML = EXPERIENCE.map(([a,b]) =>
+  '<div class="row">' + AB_STAR + '<div>' + a + '<br>' + b + '</div></div>').join("");
+
+/* interests — same tiny diamond beside every item */
+const INTERESTS = ["designing","exploring","driving creativity","building community","giving back"];
+const AB_DIAMOND = '<svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">' +
+  '<path d="M8 1.5 L14.5 8 L8 14.5 L1.5 8 Z" stroke="#2d55a8" stroke-width="1.8" stroke-linejoin="round"/></svg>';
+const intBox = document.getElementById("ab-int");
+if (intBox) intBox.innerHTML = INTERESTS.map(t =>
+  '<div class="row">' + AB_DIAMOND + '<div>' + t + '</div></div>').join("");
+
+/* tint the fixed nav ink-blue while the About page is in view */
+const aboutSec = document.getElementById("about");
+if (aboutSec && "IntersectionObserver" in window) {
+  new IntersectionObserver(es => {
+    es.forEach(e => document.body.classList.toggle("on-about", e.intersectionRatio > 0.35));
+  }, {threshold:[0, .35, .6, 1]}).observe(aboutSec);
+}
 
 if (ASSETS.deviceFrame) {
   const d = document.getElementById("device"), s = ASSETS.deviceScreen;
