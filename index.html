@@ -121,6 +121,7 @@ nav a:hover{opacity:1;text-decoration:underline;text-underline-offset:5px}
 
 <div id="canvas">
   <div class="item" id="notebook"></div>
+  <div class="item doorlabel" id="label-about">About Me</div>
 
   <div class="item" id="photo"><div class="ph">YOUR PHOTO<br>photobooth style</div></div>
   <div class="item" id="scrap-hi"></div>
@@ -133,10 +134,10 @@ nav a:hover{opacity:1;text-decoration:underline;text-underline-offset:5px}
   <div class="item" id="doodle-apple"></div>
 
   <div class="item device" id="device" role="button" tabindex="0"
-       aria-label="Experience — plays a preview video">
+       aria-label="Offline — plays a preview video">
     <div class="ph">DEVICE PNG<br>+ SCREEN VIDEO on hover</div>
   </div>
-  <div class="item doorlabel" id="label-exp">Experience</div>
+  <div class="item doorlabel" id="label-exp">Offline</div>
 
   <div class="item" id="skills"></div>
   <div class="item doorlabel" id="label-cert">Skills</div>
@@ -155,6 +156,7 @@ nav a:hover{opacity:1;text-decoration:underline;text-underline-offset:5px}
 /* canvas coordinates (1440 x 900). w/h tuned to each asset's true aspect. */
 const LAYOUT = {
   "notebook":       {x: 237, y: 314, w: 205, h: 228, r: -2, href: null},
+  "label-about":    {x: 230, y: 556, w: 220, h:  30, r:  0},
   "scrap-hi":       {x: 615, y: 163, w: 190, h:  89, r:  0},
   "photo":          {x: 535, y: 216, w: 320, h: 375, r:  0},
   "scrap-welcome":  {x: 557, y: 566, w: 276, h:  76, r:  0},
