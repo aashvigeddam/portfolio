@@ -248,14 +248,15 @@ if (ASSETS.notebookOpen) {
      z       resting stack order (higher = on top of the pile)      */
 const PATCH_AR = 0.865;   /* w/h of the patch artwork */
 const SKILLS = [
-  /* z runs high on the top row so each patch's printed name stays clear */
-  {name:"Figma",        patch:"assets/patches/figma.png",   cx:110, cy: 56, w:71, r:-4, spread:[ -7,-14], pull:[ -4,-8], z:6},
-  {name:"Claude",       patch:"assets/patches/claude.png",  cx:176, cy: 50, w:73, r: 3, spread:[  7,-15], pull:[  4,-8], z:7},
-  {name:"GitHub",       patch:"assets/patches/github.png",  cx: 74, cy:124, w:70, r: 5, spread:[-17,  0], pull:[-10, 0], z:4},
-  {name:"Canva",        patch:"assets/patches/canva.png",   cx:143, cy:122, w:76, r:-2, spread:[  0, -4], pull:[  0,-8], z:5},
-  {name:"ChatGPT",      patch:"assets/patches/chatgpt.png", cx:212, cy:127, w:72, r: 4, spread:[ 17,  1], pull:[ 10, 1], z:3},
-  {name:"Google tools", patch:"assets/patches/google.png",  cx:110, cy:194, w:71, r:-5, spread:[ -6, 14], pull:[ -4, 8], z:2},
-  {name:"Excel",        patch:"assets/patches/excel.png",   cx:176, cy:197, w:72, r: 2, spread:[  6, 13], pull:[  4, 7], z:1},
+  /* z runs high on the top row so each patch's printed name stays clear
+     as the pile stacks downward */
+  {name:"Figma",        patch:"assets/patches/figma.png",   cx:118, cy: 68, w:82, r:-4, spread:[ -9,-17], pull:[ -5,-9], z:6},
+  {name:"Claude",       patch:"assets/patches/claude.png",  cx:172, cy: 62, w:84, r: 3, spread:[  9,-18], pull:[  5,-9], z:7},
+  {name:"GitHub",       patch:"assets/patches/github.png",  cx: 88, cy:128, w:82, r: 5, spread:[-20,  0], pull:[-11, 0], z:4},
+  {name:"Canva",        patch:"assets/patches/canva.png",   cx:146, cy:124, w:88, r:-2, spread:[  0, -5], pull:[  0,-9], z:5},
+  {name:"ChatGPT",      patch:"assets/patches/chatgpt.png", cx:204, cy:130, w:84, r: 4, spread:[ 20,  1], pull:[ 11, 1], z:3},
+  {name:"Google tools", patch:"assets/patches/google.png",  cx:118, cy:192, w:82, r:-5, spread:[ -8, 17], pull:[ -5, 9], z:2},
+  {name:"Excel",        patch:"assets/patches/excel.png",   cx:174, cy:196, w:84, r: 2, spread:[  8, 16], pull:[  5, 8], z:1},
 ];
 
 const skillsBox = document.getElementById("skills");
