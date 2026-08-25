@@ -386,6 +386,17 @@ const bookFX = (() => {
       for (const el of [pagesBox, aboutPage])
         Object.assign(el.style, {left:pl+"px", top:pt+"px", width:pw+"px", height:ph+"px"});
 
+      /* the About page itself, printed in miniature on the final book
+         page — the last flip reveals it, then the dive enlarges it to
+         exactly the real section's on-screen size and position */
+      const mini = document.getElementById("about-canvas").cloneNode(true);
+      const c = pw*.9/1672;                        /* miniature scale  */
+      mini.removeAttribute("id");                  /* fit() keeps targeting the real one */
+      Object.assign(mini.style, {position:"absolute", top:"50%", left:"50%",
+        width:"1672px", height:"941px", transformOrigin:"center center",
+        transform:"translate(-50%,-50%) scale(" + c + ")"});
+      aboutPage.replaceChildren(mini);
+
       pagesBox.innerHTML = "";
       const flips = Array.from({length:4}, (_, i) => {
         const p = document.createElement("div");
@@ -421,43 +432,41 @@ const bookFX = (() => {
         turn(flips[3], 1140, 520, -179.5),
       ];
       await Promise.all([glide, ...riffle].map(a => a.finished));
+      await new Promise(r => setTimeout(r, 170));  /* a beat to see it */
 
-      /* 3 — dive into the About-colored page until it fills the screen;
-         the spent pages fade so no pile edge peeks past the spine     */
+      /* 3 — dive: everything zooms together until the miniature About
+         is pixel-aligned with the real section. The spent pages, the
+         leather frame, and the dim all wash to paper color en route,
+         so any part of the screen the page can't reach still matches. */
       pagesBox.animate([{opacity:1},{opacity:0}],
         {duration:220, easing:"ease-out", fill:"both"});
-      const s2 = Math.max(vw/pw, vh/ph) * 1.12;
+      const aScale = Math.min(vw/1672, vh/941);    /* real About scale */
+      const s2 = aScale/c;
       const dx = vw/2 - (bx+pl+pw/2), dy = vh/2 - (by+pt+ph/2);
       book.style.transformOrigin = (pl+pw/2) + "px " + (pt+ph/2) + "px";
+      dim.animate([{backgroundColor:"rgba(24,19,14,.52)"},
+                   {backgroundColor:"rgba(242,239,235,1)"}],
+        {duration:520, easing:"ease-in", fill:"both"});
+      book.querySelector("img").animate([{opacity:1},{opacity:1, offset:.45},{opacity:0, offset:.85},{opacity:0}],
+        {duration:640, fill:"both"});
       await book.animate([
         {transform:"translate(0,0) scale(1)"},
         {transform:`translate(${dx}px,${dy}px) scale(${s2})`}
-      ], {duration:620, easing:"cubic-bezier(.55,.02,.2,1)", fill:"both"}).finished;
+      ], {duration:640, easing:"cubic-bezier(.5,.04,.22,1)", fill:"both"}).finished;
 
-      /* 4 — cut to #about while the screen is one flat paper color */
+      /* 4 — the real section takes over underneath, then the overlay
+         (now visually identical to it) simply fades away */
       history.replaceState(null, "", "#about");
       const doc = document.documentElement, sb = doc.style.scrollBehavior;
       doc.style.scrollBehavior = "auto";
       scrollTo(0, document.getElementById("about").offsetTop);
       doc.style.scrollBehavior = sb;
-
-      /* pieces settle in: backing layers first, text last */
-      [...document.querySelectorAll("#about-canvas .ab")]
-        .sort((a,b) => (+a.style.zIndex||0)-(+b.style.zIndex||0) || a.offsetLeft-b.offsetLeft)
-        .forEach((el, i) => {
-          const base = el.style.transform || "";
-          el.animate([
-            {transform: base + " translateY(14px)", opacity:0},
-            {transform: base, opacity:1}
-          ], {delay:120+i*30, duration:480,
-              easing:"cubic-bezier(.2,.85,.3,1)", fill:"backwards"});
-        });
-
       await fx.animate([{opacity:1},{opacity:0}],
-        {duration:340, delay:80, easing:"ease-out", fill:"both"}).finished;
+        {duration:260, easing:"ease-out", fill:"both"}).finished;
     } finally {
       fx.classList.remove("on");
       for (const a of fx.getAnimations({subtree:true})) a.cancel();
+      aboutPage.replaceChildren();               /* drop the miniature */
       book.style.transformOrigin = "";
       lock(false); running = false;
     }
