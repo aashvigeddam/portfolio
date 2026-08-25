@@ -145,8 +145,9 @@ nav,nav a,nav .mono img{transition:color .35s ease,filter .35s ease}
 #work{position:relative;height:100vh;overflow:hidden;background:#bbc2cd;z-index:1}
 /* the scenic backdrop bleeds edge-to-edge at every viewport shape;
    the component canvas contain-scales on top of it */
-#work .wk-bgfull{position:absolute;inset:0;z-index:0}
-#work .wk-bgfull img{width:100%;height:100%;object-fit:cover;display:block}
+#work .wk-bgfull{position:absolute;inset:0;z-index:0;overflow:hidden}
+#work .wk-bgfull img{width:100%;height:100%;object-fit:cover;display:block;
+  filter:blur(12px);transform:scale(1.07)}
 #work-canvas{position:absolute;top:50%;left:50%;width:1672px;height:941px;
   transform-origin:center center;z-index:1}
 .wk{position:absolute}
@@ -154,7 +155,7 @@ nav,nav a,nav .mono img{transition:color .35s ease,filter .35s ease}
 /* cards are straight high-res PNGs; tilt, corners, and shadow are
    live CSS so nothing is baked or resampled */
 .wk-card{overflow:hidden;transform:rotate(var(--ang,0deg));
-  box-shadow:0 6px 14px rgba(50,60,80,.26)}
+  box-shadow:0 4px 10px rgba(50,60,80,.20)}
 .wk-card img{width:100%;height:100%;object-fit:cover}
 .wk-card a,.wk-label a{position:absolute;inset:0;display:block;color:inherit;text-decoration:none}
 @media (prefers-reduced-motion:no-preference){
@@ -291,6 +292,7 @@ nav,nav a,nav .mono img{transition:color .35s ease,filter .35s ease}
 <section id="work" aria-label="My work">
   <div class="wk-bgfull" aria-hidden="true"><img src="assets/work/bg.jpg" alt=""></div>
   <div id="work-canvas">
+    <div class="wk" id="wk-bg" aria-hidden="true"><img src="assets/work/bg.jpg" alt=""></div>
     <div class="wk" id="wk-head"><img src="assets/work/my-work.png" alt="my work"></div>
     <div class="wk" id="wk-caption">A selection of projects I&rsquo;ve had the privilege to work on.</div>
     <!-- project cards are built from the PROJECTS array in the script -->
@@ -737,6 +739,7 @@ if ("IntersectionObserver" in window) {
    pushpin (center point), and the label card with its text. Move,
    resize, retitle, add or remove projects here. */
 const WORK_LAYOUT = {
+  "wk-bg":      {x:   0, y:   0, w: 1672, h: 941, z: 0},
   "wk-head":    {x: 700, y:  85, w:  275, h:  95, z: 2},
   "wk-caption": {x: 436, y: 176, w:  800, h:  22, z: 2},
   "wk-where":   {x: 586, y: 886, w:  500, h:  48, z: 2},
