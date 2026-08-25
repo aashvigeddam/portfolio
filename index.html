@@ -157,27 +157,24 @@ nav,nav a,nav .mono img{transition:color .35s ease,filter .35s ease}
 /* the rounded corners come from a soft-edged mask rather than a hard
    overflow clip, so a tilted card's borders antialias instead of
    stair-stepping; the drop-shadow follows the masked shape */
-.wk-card{transform:rotate(var(--ang,0deg));
-  filter:drop-shadow(0 4px 9px rgba(50,60,80,.22))}
+/* every project is a stack of separate pieces: a lace paper sheet,
+   the project screenshot over it, a pushpin, and the caption card.
+   The lace sheet is larger than the screenshot, so the card's exact
+   shape never has to line up with anything underneath. */
+.wk-lace img{width:100%;height:100%;display:block}
+.wk-card{transform:rotate(var(--ang,0deg))}
 .wk-card img{width:100%;height:100%;object-fit:cover;display:block}
+.wk-pin img{width:100%;height:100%;display:block;
+  filter:drop-shadow(0 2px 3px rgba(40,50,70,.38))}
 .wk-card a,.wk-label a{position:absolute;inset:0;display:block;color:inherit;text-decoration:none}
-@media (prefers-reduced-motion:no-preference){
-  .wk-card{transition:transform .3s cubic-bezier(.3,.8,.3,1)}
-  .wk-card:hover,.wk-card:focus-within{transform:rotate(var(--ang,0deg)) translateY(-5px)}
-  .wk-label a{transition:transform .3s cubic-bezier(.3,.8,.3,1)}
-  .wk-label a:hover,.wk-label a:focus-visible{transform:translateY(-3px)}
-}
-.wk-pin img{filter:drop-shadow(0 3px 4px rgba(40,50,70,.4))}
-.wk-label{filter:drop-shadow(0 4px 8px rgba(50,60,80,.24))}
+.wk-label{filter:drop-shadow(0 3px 7px rgba(50,60,80,.20))}
 .wk-label .paper{position:absolute;inset:0;width:100%;height:100%}
 .wk-label .lt{position:relative;text-align:center;
   font-family:Georgia,"Times New Roman",serif;color:#2c4e7b;
-  font-size:20px;line-height:1.15;padding-top:10px}
+  font-size:20px;line-height:1.15}
 .wk-label .ld{position:relative;text-align:center;white-space:nowrap;
   font-family:"Courier Prime","Courier New",monospace;color:#605c5b;
   font-size:12.5px;line-height:1.55;margin-top:4px}
-#wk-caption{text-align:center;font-size:13px;letter-spacing:.18em;
-  text-transform:uppercase;color:#8e9399}
 #wk-where{text-align:center;font-size:13px;letter-spacing:.15em;line-height:2.05;
   text-transform:uppercase;color:#5478a8}
 
@@ -297,7 +294,6 @@ nav,nav a,nav .mono img{transition:color .35s ease,filter .35s ease}
   <div id="work-canvas">
     <div class="wk" id="wk-bg" aria-hidden="true"><img src="assets/work/bg-wide.jpg" alt=""></div>
     <div class="wk" id="wk-head"><img src="assets/work/my-work.png" alt="my work"></div>
-    <div class="wk" id="wk-caption">A selection of projects I&rsquo;ve had the privilege to work on.</div>
     <!-- project cards are built from the PROJECTS array in the script -->
     <div class="wk" id="wk-where">Bay Area, CA<br>University of Washington, Seattle</div>
   </div>
@@ -743,25 +739,41 @@ if ("IntersectionObserver" in window) {
    resize, retitle, add or remove projects here. */
 const WORK_LAYOUT = {
   "wk-bg":      {x:-400, y:-100, w: 2472, h: 1141, z: 0},
-  "wk-head":    {x: 700, y:  85, w:  275, h:  95, z: 2},
-  "wk-caption": {x: 436, y: 176, w:  800, h:  22, z: 2},
-  "wk-where":   {x: 586, y: 886, w:  500, h:  48, z: 2},
+  "wk-head":    {x: 700, y:  92, w:  275, h:  95, z: 6},
+  "wk-where":   {x: 586, y: 884, w:  500, h:  48, z: 6},
 };
 const PROJECTS = [
-  {id:"cuelens",    href:"https://cuelensai.vercel.app/", img:"assets/work/card-cuelens.png",    card:{x: 289.0, y: 221.7, w: 452, h: 258, ang: 2.3,  rad: 0}, pin:{x: 308, y: 222},
-   label:{x: 413, y: 460, w: 216, h:  92, padTop: 12},
+  {id:"cuelens", href:"https://cuelensai.vercel.app/",
+   lace:{x: 256, y: 196, w: 534, h: 332},
+   card:{x: 297, y: 227, w: 434, h: 247, ang: 0},
+   pin: {x: 315, y: 226},
+   label:{x: 414, y: 468, w: 214, h: 82, padTop: 12},
    title:"CueLens", desc:"AI-powered design analysis<br>to understand user intent."},
-  {id:"magnus",     img:"assets/work/card-magnus.png",     card:null, pin:{x: 890, y: 230},
-   label:{x: 953, y: 457, w: 219, h: 107, padTop: 15},
+
+  {id:"magnus",
+   lace:{x: 836, y: 206, w: 538, h: 374},
+   card:null, pin:null,
+   label:{x: 962, y: 452, w: 218, h: 108, padTop: 14},
    title:"Magnus United<br>Website Redesign", desc:"Coming Soon"},
-  {id:"brainage",   href:"https://brainage-calculator.vercel.app/", img:"assets/work/card-brainage.png",   card:{x: 227.2, y: 587.7, w: 357, h: 206, ang: 1.03, rad: 0}, pin:{x: 236, y: 593},
-   label:{x: 292, y: 780, w: 235, h:  94, padTop: 12},
+
+  {id:"brainage", href:"https://brainage-calculator.vercel.app/",
+   lace:{x: 186, y: 564, w: 434, h: 248},
+   card:{x: 205, y: 590, w: 374, h: 192, ang: 0},
+   pin: {x: 233, y: 589},
+   label:{x: 296, y: 786, w: 234, h:  88, padTop: 12},
    title:"Brain Age Calculator", desc:"Quantifying brain wellness<br>using MRI and neuroscience."},
-  {id:"airesearch", img:"assets/work/card-airesearch.png", card:null, pin:{x: 650, y: 602},
-   label:{x: 683, y: 785, w: 200, h:  80, padTop: 12},
+
+  {id:"airesearch",
+   lace:{x: 606, y: 576, w: 340, h: 244},
+   card:null, pin:null,
+   label:{x: 690, y: 788, w: 190, h:  78, padTop: 12},
    title:"AI Research", desc:"Coming Soon"},
-  {id:"magnusmap",  href:"https://aashvigeddam.github.io/magnus-map/", img:"assets/work/card-magnusmap.png",  card:{x:1005.2, y: 571.6, w: 415, h: 219, ang: -0.36,rad: 0}, pin:{x:1017, y: 585},
-   label:{x:1105, y: 774, w: 222, h: 103, padTop: 12},
+
+  {id:"magnusmap", href:"https://aashvigeddam.github.io/magnus-map/",
+   lace:{x: 986, y: 546, w: 464, h: 266},
+   card:{x:1017, y: 574, w: 402, h: 208, ang: 0},
+   pin: {x:1010, y: 582},
+   label:{x:1104, y: 780, w: 220, h:  92, padTop: 12},
    title:"Magnus Map", desc:"Real-time geospatial mapping<br>and coordination platform."},
 ];
 const workCanvas = document.getElementById("work-canvas");
@@ -777,28 +789,50 @@ if (workCanvas) {
     ? '<a href="' + pr.href + '" target="_blank" rel="noopener"' +
       (aria ? ' aria-label="' + aria + '"' : '') + '>' + inner + '</a>'
     : inner;
+  const place = (el, g, z) => {
+    Object.assign(el.style, {left:g.x+"px", top:g.y+"px",
+      width:g.w+"px", height:g.h+"px", zIndex:z});
+    return el;
+  };
   for (const pr of PROJECTS) {
-    /* the two "coming soon" projects have no overlay — the artwork's
-       own cards are already exact, so only the live label sits on them */
-    let card = null;
+    const pieces = [];
+
+    /* the lace paper sheet the project is pinned to */
+    const lace = document.createElement("div");
+    lace.className = "wk wk-lace"; lace.id = "wk-lace-" + pr.id;
+    lace.setAttribute("aria-hidden", "true");
+    lace.innerHTML = '<img src="assets/work/lace-' + pr.id + '.png" alt="">';
+    pieces.push(place(lace, pr.lace, 1));
+
+    /* the screenshot; the two "coming soon" projects have none */
     if (pr.card) {
-      card = document.createElement("div");
+      const card = document.createElement("div");
       card.className = "wk wk-card"; card.id = "wk-card-" + pr.id;
-      Object.assign(card.style, {left:pr.card.x+"px", top:pr.card.y+"px",
-        width:pr.card.w+"px", height:pr.card.h+"px", zIndex:1});
-      card.style.setProperty("--ang", pr.card.ang+"deg");
-      card.innerHTML = wkLink(pr, '<img src="' + pr.img + '" alt="">',
-        pr.title.replace(/<br>/g," ") + " — open site");
+      place(card, pr.card, 2);
+      card.style.setProperty("--ang", (pr.card.ang || 0) + "deg");
+      card.innerHTML = wkLink(pr, '<img src="assets/work/card-' + pr.id + '.png" alt="">',
+        pr.title.replace(/<br>/g, " ") + " — open site");
+      pieces.push(card);
     }
+    if (pr.pin) {
+      const pin = document.createElement("div");
+      pin.className = "wk wk-pin"; pin.id = "wk-pin-" + pr.id;
+      pin.setAttribute("aria-hidden", "true");
+      place(pin, {x:pr.pin.x - 15.5, y:pr.pin.y - 15.5, w:31, h:31}, 3);
+      pin.innerHTML = '<img src="assets/work/pin.png" alt="">';
+      pieces.push(pin);
+    }
+
     const label = document.createElement("div");
     label.className = "wk wk-label"; label.id = "wk-label-" + pr.id;
-    Object.assign(label.style, {left:pr.label.x+"px", top:pr.label.y+"px",
-      width:pr.label.w+"px", height:pr.label.h+"px", zIndex:2});
+    place(label, pr.label, 4);
     label.innerHTML = wkLink(pr,
       '<img class="paper" src="assets/work/label.png" alt="">' +
       '<div class="lt" style="padding-top:' + pr.label.padTop + 'px">' + pr.title +
       '</div><div class="ld">' + pr.desc + '</div>');
-    workCanvas.append(...[card, label].filter(Boolean));
+    pieces.push(label);
+
+    workCanvas.append(...pieces);
   }
 }
 
