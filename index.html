@@ -132,7 +132,7 @@ nav,nav a,nav .mono img{transition:color .35s ease,filter .35s ease}
 #ab-exp .row+.row{border-top:1.5px dashed #bbb6b2}
 #ab-exp .row img{flex:0 0 auto;margin-top:-3px}
 #ab-int{font-size:15.5px;line-height:1.4}
-#ab-int .row{display:flex;gap:6px;align-items:center;margin-bottom:16px}
+#ab-int .row{display:flex;gap:4px;align-items:center;margin-bottom:11px}
 #ab-int .row img{flex:0 0 auto}
 /* notebook is now a doorway to #about */
 #notebook a{cursor:pointer}
@@ -446,7 +446,7 @@ if (expBox) expBox.innerHTML = EXPERIENCE.map(([a,b]) =>
 
 /* interests — same tiny diamond beside every item */
 const INTERESTS = ["designing","exploring","driving creativity","building community","giving back"];
-const AB_DIAMOND = '<img src="assets/about/diamond.png" width="34" height="34" alt="" aria-hidden="true">';
+const AB_DIAMOND = '<img src="assets/about/diamond.png" width="42" height="48" alt="" aria-hidden="true">';
 const intBox = document.getElementById("ab-int");
 if (intBox) intBox.innerHTML = INTERESTS.map(t =>
   '<div class="row">' + AB_DIAMOND + '<div>' + t + '</div></div>').join("");
