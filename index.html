@@ -50,11 +50,12 @@ nav .mono img{height:84px;width:auto;display:block;
 nav .links{position:absolute;right:44px;display:flex;gap:52px;text-transform:uppercase}
 nav a{color:#fff;text-decoration:none;opacity:.92}
 nav a:hover{opacity:1;text-decoration:underline;text-underline-offset:5px}
-/* over the About section the fixed nav switches to the page's ink blue */
-body.on-about nav{color:#355c9a;text-shadow:none}
-body.on-about nav a{color:#355c9a}
+/* over the About/Work sections the fixed nav switches to ink blue */
+body.on-about nav,body.on-work nav{color:#355c9a;text-shadow:none}
+body.on-about nav a,body.on-work nav a{color:#355c9a}
 body.on-about nav a[href="#about"]{text-decoration:underline;text-underline-offset:6px}
-body.on-about nav .mono img{filter:brightness(0) saturate(100%) invert(29%) sepia(59%) saturate(1362%) hue-rotate(198deg) brightness(93%) contrast(96%)}
+body.on-work nav a[href="#work"]{text-decoration:underline;text-underline-offset:6px}
+body.on-about nav .mono img,body.on-work nav .mono img{filter:brightness(0) saturate(100%) invert(29%) sepia(59%) saturate(1362%) hue-rotate(198deg) brightness(93%) contrast(96%)}
 nav,nav a,nav .mono img{transition:color .35s ease,filter .35s ease}
 
 #whereabouts{text-align:center;font-size:13px;letter-spacing:.15em;line-height:2.05;
@@ -136,6 +137,31 @@ nav,nav a,nav .mono img{transition:color .35s ease,filter .35s ease}
 #ab-int{font-size:15.5px;line-height:1.4}
 #ab-int .row{display:flex;gap:4px;align-items:center;margin-bottom:11px}
 #ab-int .row img{flex:0 0 auto}
+/* ============================================================
+   WORK — pinned project cards over the bay. Canvas: 1672 x 941
+   design units (the reference artwork's grid), contain-scaled.
+   Positions live in WORK_LAYOUT / PROJECTS at the bottom.
+   ============================================================ */
+#work{position:relative;height:100vh;overflow:hidden;background:#bbc2cd;z-index:1}
+#work-canvas{position:absolute;top:50%;left:50%;width:1672px;height:941px;
+  transform-origin:center center}
+.wk{position:absolute}
+.wk>img{width:100%;height:100%;display:block}
+.wk-card img{filter:drop-shadow(0 10px 18px rgba(50,60,80,.32))}
+.wk-pin img{filter:drop-shadow(0 3px 4px rgba(40,50,70,.4))}
+.wk-label{filter:drop-shadow(0 6px 10px rgba(50,60,80,.30))}
+.wk-label .paper{position:absolute;inset:0;width:100%;height:100%}
+.wk-label .lt{position:relative;text-align:center;
+  font-family:Georgia,"Times New Roman",serif;color:#2c4e7b;
+  font-size:20px;line-height:1.15;padding-top:10px}
+.wk-label .ld{position:relative;text-align:center;white-space:nowrap;
+  font-family:"Courier Prime","Courier New",monospace;color:#605c5b;
+  font-size:12.5px;line-height:1.55;margin-top:4px}
+#wk-caption{text-align:center;font-size:13px;letter-spacing:.18em;
+  text-transform:uppercase;color:#8e9399}
+#wk-where{text-align:center;font-size:13px;letter-spacing:.15em;line-height:2.05;
+  text-transform:uppercase;color:#5478a8}
+
 /* notebook is now a doorway to #about */
 #notebook a{cursor:pointer}
 
@@ -172,7 +198,7 @@ nav,nav a,nav .mono img{transition:color .35s ease,filter .35s ease}
   <span class="name">aashvi geddam</span>
   <span class="mono"><img src="assets/logo.png" alt="AG monogram"></span>
   <span class="links">
-    <a href="#about">About</a><a href="#">Work</a><a href="#">Play</a><a href="#">Contact</a>
+    <a href="#about">About</a><a href="#work">Work</a><a href="#">Play</a><a href="#">Contact</a>
   </span>
 </nav>
 
@@ -244,6 +270,16 @@ nav,nav a,nav .mono img{transition:color .35s ease,filter .35s ease}
     <div class="ab" id="ab-int-head"><img src="assets/about/int-head-art.png" alt="you&rsquo;ll find me..."></div>
     <div class="ab ab-type" id="ab-int"></div>
     <span class="sr-only">thanks for stopping by</span>
+  </div>
+</section>
+
+<section id="work" aria-label="My work">
+  <div id="work-canvas">
+    <div class="wk" id="wk-bg" aria-hidden="true"><img src="assets/work/bg.jpg" alt=""></div>
+    <div class="wk" id="wk-head"><img src="assets/work/my-work.png" alt="my work"></div>
+    <div class="wk" id="wk-caption">A selection of projects I&rsquo;ve had the privilege to work on.</div>
+    <!-- project cards are built from the PROJECTS array in the script -->
+    <div class="wk" id="wk-where">Bay Area, CA<br>University of Washington, Seattle</div>
   </div>
 </section>
 
@@ -601,6 +637,8 @@ function fit(){
   const a = Math.min(innerWidth / AW, innerHeight / AH);
   document.getElementById("about-canvas").style.transform =
     "translate(-50%,-50%) scale(" + a + ")";
+  const wc = document.getElementById("work-canvas");
+  if (wc) wc.style.transform = "translate(-50%,-50%) scale(" + a + ")";
 }
 addEventListener("resize", fit); fit();
 
@@ -666,12 +704,74 @@ const intBox = document.getElementById("ab-int");
 if (intBox) intBox.innerHTML = INTERESTS.map(t =>
   '<div class="row">' + AB_DIAMOND + '<div>' + t + '</div></div>').join("");
 
-/* tint the fixed nav ink-blue while the About page is in view */
-const aboutSec = document.getElementById("about");
-if (aboutSec && "IntersectionObserver" in window) {
-  new IntersectionObserver(es => {
-    es.forEach(e => document.body.classList.toggle("on-about", e.intersectionRatio > 0.35));
-  }, {threshold:[0, .35, .6, 1]}).observe(aboutSec);
+/* tint the fixed nav ink-blue while the About or Work page is in view,
+   and underline whichever section the viewer is on */
+if ("IntersectionObserver" in window) {
+  for (const [id, cls] of [["about","on-about"],["work","on-work"]]) {
+    const sec = document.getElementById(id);
+    if (!sec) continue;
+    new IntersectionObserver(es => {
+      es.forEach(e => document.body.classList.toggle(cls, e.intersectionRatio > 0.35));
+    }, {threshold:[0, .35, .6, 1]}).observe(sec);
+  }
+}
+
+/* ---- work page ----------------------------------------------------
+   Same 1672x941 grid as About. Fixed dressing lives in WORK_LAYOUT;
+   each project is one entry in PROJECTS — its screenshot card, the
+   pushpin (center point), and the label card with its text. Move,
+   resize, retitle, add or remove projects here. */
+const WORK_LAYOUT = {
+  "wk-bg":      {x:   0, y:   0, w: 1672, h: 941, z: 0},
+  "wk-head":    {x: 700, y:  85, w:  275, h:  95, z: 2},
+  "wk-caption": {x: 436, y: 176, w:  800, h:  22, z: 2},
+  "wk-where":   {x: 586, y: 886, w:  500, h:  48, z: 2},
+};
+const PROJECTS = [
+  {id:"cuelens",    card:{x: 290, y: 219, w: 450, h: 263}, pin:{x: 308, y: 222},
+   label:{x: 417, y: 462, w: 200, h: 88},
+   title:"CueLens", desc:"AI-powered design analysis<br>to understand user intent."},
+  {id:"magnus",     card:{x: 873, y: 225, w: 456, h: 276}, pin:{x: 890, y: 230},
+   label:{x: 955, y: 462, w: 212, h: 90},
+   title:"Magnus United<br>Website Redesign", desc:"Coming Soon"},
+  {id:"brainage",   card:{x: 231, y: 590, w: 349, h: 201}, pin:{x: 236, y: 593},
+   label:{x: 299, y: 782, w: 221, h: 86},
+   title:"Brain Age Calculator", desc:"Quantifying brain wellness<br>using MRI and neuroscience."},
+  {id:"airesearch", card:{x: 634, y: 606, w: 318, h: 204}, pin:{x: 650, y: 602},
+   label:{x: 687, y: 787, w: 183, h: 70},
+   title:"AI Research", desc:"Coming Soon"},
+  {id:"magnusmap",  card:{x:1010, y: 576, w: 405, h: 210}, pin:{x:1017, y: 585},
+   label:{x:1107, y: 776, w: 215, h: 86},
+   title:"Magnus Map", desc:"Real-time geospatial mapping<br>and coordination platform."},
+];
+const workCanvas = document.getElementById("work-canvas");
+if (workCanvas) {
+  for (const [id, p] of Object.entries(WORK_LAYOUT)) {
+    const el = document.getElementById(id);
+    if (!el) continue;
+    el.style.left = p.x + "px"; el.style.top = p.y + "px";
+    el.style.width = p.w + "px"; el.style.height = p.h + "px";
+    el.style.zIndex = p.z;
+  }
+  for (const pr of PROJECTS) {
+    const card = document.createElement("div");
+    card.className = "wk wk-card"; card.id = "wk-card-" + pr.id;
+    Object.assign(card.style, {left:pr.card.x+"px", top:pr.card.y+"px",
+      width:pr.card.w+"px", height:pr.card.h+"px", zIndex:1});
+    card.innerHTML = '<img src="assets/work/card-' + pr.id + '.png" alt="">';
+    const pin = document.createElement("div");
+    pin.className = "wk wk-pin"; pin.id = "wk-pin-" + pr.id;
+    Object.assign(pin.style, {left:(pr.pin.x-14.5)+"px", top:(pr.pin.y-14.5)+"px",
+      width:"29px", height:"29px", zIndex:3});
+    pin.innerHTML = '<img src="assets/work/pin.png" alt="">';
+    const label = document.createElement("div");
+    label.className = "wk wk-label"; label.id = "wk-label-" + pr.id;
+    Object.assign(label.style, {left:pr.label.x+"px", top:pr.label.y+"px",
+      width:pr.label.w+"px", height:pr.label.h+"px", zIndex:2});
+    label.innerHTML = '<img class="paper" src="assets/work/label.png" alt="">' +
+      '<div class="lt">' + pr.title + '</div><div class="ld">' + pr.desc + '</div>';
+    workCanvas.append(card, pin, label);
+  }
 }
 
 if (ASSETS.deviceFrame) {
