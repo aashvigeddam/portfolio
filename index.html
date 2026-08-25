@@ -748,20 +748,20 @@ const WORK_LAYOUT = {
   "wk-where":   {x: 586, y: 886, w:  500, h:  48, z: 2},
 };
 const PROJECTS = [
-  {id:"cuelens",    href:"https://cuelensai.vercel.app/", img:"assets/work/card-cuelens.png",    card:{x:295.0, y:227.7, w:440.0, h:246.0, ang: 2.3,  rad: 14}, pin:{x: 308, y: 222},
-   label:{x: 417, y: 462, w: 200, h: 88},
+  {id:"cuelens",    href:"https://cuelensai.vercel.app/", img:"assets/work/card-cuelens.png",    card:{x: 289.0, y: 221.7, w: 452, h: 258, ang: 2.3,  rad: 0}, pin:{x: 308, y: 222},
+   label:{x: 413, y: 460, w: 216, h:  92, padTop: 12},
    title:"CueLens", desc:"AI-powered design analysis<br>to understand user intent."},
-  {id:"magnus",     img:"assets/work/card-magnus.png",     card:{x:877.4, y:234.1, w:447.0, h:258.0, ang: 2.26, rad: 12}, pin:{x: 890, y: 230},
-   label:{x: 955, y: 462, w: 212, h: 90},
+  {id:"magnus",     img:"assets/work/card-magnus.png",     card:null, pin:{x: 890, y: 230},
+   label:{x: 953, y: 457, w: 219, h: 107, padTop: 15},
    title:"Magnus United<br>Website Redesign", desc:"Coming Soon"},
-  {id:"brainage",   href:"https://brainage-calculator.vercel.app/", img:"assets/work/card-brainage.png",   card:{x:233.2, y:593.7, w:345.0, h:194.0, ang: 1.03, rad: 10}, pin:{x: 236, y: 593},
-   label:{x: 299, y: 782, w: 221, h: 86},
+  {id:"brainage",   href:"https://brainage-calculator.vercel.app/", img:"assets/work/card-brainage.png",   card:{x: 227.2, y: 587.7, w: 357, h: 206, ang: 1.03, rad: 0}, pin:{x: 236, y: 593},
+   label:{x: 292, y: 780, w: 235, h:  94, padTop: 12},
    title:"Brain Age Calculator", desc:"Quantifying brain wellness<br>using MRI and neuroscience."},
-  {id:"airesearch", img:"assets/work/card-airesearch.png", card:{x:638.7, y:614.4, w:309.0, h:187.0, ang: 3.2,  rad: 10}, pin:{x: 650, y: 602},
-   label:{x: 687, y: 787, w: 183, h: 70},
+  {id:"airesearch", img:"assets/work/card-airesearch.png", card:null, pin:{x: 650, y: 602},
+   label:{x: 683, y: 785, w: 200, h:  80, padTop: 12},
    title:"AI Research", desc:"Coming Soon"},
-  {id:"magnusmap",  href:"https://aashvigeddam.github.io/magnus-map/", img:"assets/work/card-magnusmap.png",  card:{x:1011.2, y:577.6, w:403.0, h:207.0, ang: -0.36,rad: 10}, pin:{x:1017, y: 585},
-   label:{x:1107, y: 776, w: 215, h: 86},
+  {id:"magnusmap",  href:"https://aashvigeddam.github.io/magnus-map/", img:"assets/work/card-magnusmap.png",  card:{x:1005.2, y: 571.6, w: 415, h: 219, ang: -0.36,rad: 0}, pin:{x:1017, y: 585},
+   label:{x:1105, y: 774, w: 222, h: 103, padTop: 12},
    title:"Magnus Map", desc:"Real-time geospatial mapping<br>and coordination platform."},
 ];
 const workCanvas = document.getElementById("work-canvas");
@@ -778,27 +778,27 @@ if (workCanvas) {
       (aria ? ' aria-label="' + aria + '"' : '') + '>' + inner + '</a>'
     : inner;
   for (const pr of PROJECTS) {
-    const card = document.createElement("div");
-    card.className = "wk wk-card"; card.id = "wk-card-" + pr.id;
-    Object.assign(card.style, {left:pr.card.x+"px", top:pr.card.y+"px",
-      width:pr.card.w+"px", height:pr.card.h+"px",
-      borderRadius:pr.card.rad+"px", zIndex:1});
-    card.style.setProperty("--ang", pr.card.ang+"deg");
-    card.innerHTML = wkLink(pr, '<img src="' + pr.img + '" alt="">',
-      pr.title.replace(/<br>/g," ") + " — open site");
-    const pin = document.createElement("div");
-    pin.className = "wk wk-pin"; pin.id = "wk-pin-" + pr.id;
-    Object.assign(pin.style, {left:(pr.pin.x-14.5)+"px", top:(pr.pin.y-14.5)+"px",
-      width:"29px", height:"29px", zIndex:3});
-    pin.innerHTML = '<img src="assets/work/pin.png" alt="">';
+    /* the two "coming soon" projects have no overlay — the artwork's
+       own cards are already exact, so only the live label sits on them */
+    let card = null;
+    if (pr.card) {
+      card = document.createElement("div");
+      card.className = "wk wk-card"; card.id = "wk-card-" + pr.id;
+      Object.assign(card.style, {left:pr.card.x+"px", top:pr.card.y+"px",
+        width:pr.card.w+"px", height:pr.card.h+"px", zIndex:1});
+      card.style.setProperty("--ang", pr.card.ang+"deg");
+      card.innerHTML = wkLink(pr, '<img src="' + pr.img + '" alt="">',
+        pr.title.replace(/<br>/g," ") + " — open site");
+    }
     const label = document.createElement("div");
     label.className = "wk wk-label"; label.id = "wk-label-" + pr.id;
     Object.assign(label.style, {left:pr.label.x+"px", top:pr.label.y+"px",
       width:pr.label.w+"px", height:pr.label.h+"px", zIndex:2});
     label.innerHTML = wkLink(pr,
       '<img class="paper" src="assets/work/label.png" alt="">' +
-      '<div class="lt">' + pr.title + '</div><div class="ld">' + pr.desc + '</div>');
-    workCanvas.append(card, pin, label);
+      '<div class="lt" style="padding-top:' + pr.label.padTop + 'px">' + pr.title +
+      '</div><div class="ld">' + pr.desc + '</div>');
+    workCanvas.append(...[card, label].filter(Boolean));
   }
 }
 
