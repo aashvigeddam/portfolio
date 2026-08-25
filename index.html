@@ -150,7 +150,7 @@ nav,nav a,nav .mono img{transition:color .35s ease,filter .35s ease}
 #book-fx .fx-book{position:absolute;will-change:transform,opacity;
   filter:drop-shadow(0 26px 54px rgba(0,0,0,.45))}
 #book-fx .fx-book>img{position:absolute;inset:0;width:100%;height:100%}
-#book-fx .fx-about-page{position:absolute}
+#book-fx .fx-about-page{position:absolute;background:#f2efeb;border-radius:2px}
 #book-fx .fx-pages{position:absolute;perspective:1500px}
 #book-fx .fx-page{position:absolute;inset:1.2% 2.5% 1.2% 0;transform-origin:0% 50%;will-change:transform;
   border-radius:2px 5px 5px 2px;
@@ -383,27 +383,13 @@ const bookFX = (() => {
       Object.assign(book.style, {left:bx+"px", top:by+"px", width:bw+"px", height:bh+"px"});
 
       const pl = PG.l*bw, pt = PG.t*bh, pw = (PG.r-PG.l)*bw, ph = (PG.b-PG.t)*bh;
-      Object.assign(pagesBox.style, {left:pl+"px", top:pt+"px", width:pw+"px", height:ph+"px"});
-
-      /* the About page lives across the WHOLE open spread — both pages,
-         laid over the spine like a real scrapbook. It assembles piece
-         by piece once the pages have flipped, then the dive enlarges it
-         to exactly the real section's on-screen size and position. */
-      const SL = .034*bw, ST = .03*bh, SW = .932*bw, SH = .94*bh;
-      Object.assign(aboutPage.style, {left:SL+"px", top:ST+"px", width:SW+"px", height:SH+"px"});
-      const mini = document.getElementById("about-canvas").cloneNode(true);
-      const c = Math.min(SW*.96/1672, SH*.92/941); /* miniature scale  */
-      mini.removeAttribute("id");                  /* fit() keeps targeting the real one */
-      Object.assign(mini.style, {position:"absolute", top:"50%", left:"50%",
-        width:"1672px", height:"941px", transformOrigin:"center center",
-        transform:"translate(-50%,-50%) scale(" + c + ")"});
-      for (const el of mini.querySelectorAll(".ab")) el.style.opacity = "0";
-      aboutPage.replaceChildren(mini);
+      for (const el of [pagesBox, aboutPage])
+        Object.assign(el.style, {left:pl+"px", top:pt+"px", width:pw+"px", height:ph+"px"});
 
       pagesBox.innerHTML = "";
       const flips = Array.from({length:4}, (_, i) => {
         const p = document.createElement("div");
-        p.className = "fx-page"; p.style.zIndex = 6+i;  /* later pages land on top */
+        p.className = "fx-page"; p.style.zIndex = 10-i;
         pagesBox.appendChild(p); return p;
       });
 
@@ -429,23 +415,40 @@ const bookFX = (() => {
         {transform:`rotateY(${end}deg)`, filter:"brightness(1)"}
       ], {delay, duration:dur, easing:"cubic-bezier(.45,.05,.22,1)", fill:"both"});
       const riffle = [
-        turn(flips[0],  560, 440, -178),
-        turn(flips[1],  720, 460, -176),
-        turn(flips[2],  880, 480, -178.5),
-        turn(flips[3], 1040, 500, -179.5),
+        turn(flips[0],  600, 460, -177.5),
+        turn(flips[1],  780, 480, -175.5),
+        turn(flips[2],  960, 500, -178.5),
+        turn(flips[3], 1140, 520, -179.5),
       ];
       await Promise.all([glide, ...riffle].map(a => a.finished));
 
-      /* the spent pile melts away, leaving a blank open spread */
+      /* 3 — dive into the About-colored page until it fills the screen;
+         the spent pages fade so no pile edge peeks past the spine     */
       pagesBox.animate([{opacity:1},{opacity:0}],
         {duration:220, easing:"ease-out", fill:"both"});
+      const s2 = Math.max(vw/pw, vh/ph) * 1.12;
+      const dx = vw/2 - (bx+pl+pw/2), dy = vh/2 - (by+pt+ph/2);
+      book.style.transformOrigin = (pl+pw/2) + "px " + (pt+ph/2) + "px";
+      await book.animate([
+        {transform:"translate(0,0) scale(1)"},
+        {transform:`translate(${dx}px,${dy}px) scale(${s2})`}
+      ], {duration:620, easing:"cubic-bezier(.55,.02,.2,1)", fill:"both"}).finished;
 
-      /* 3 — the scrapbook assembles itself on the spread. Each material
+      /* 4 — cut to #about while the screen is one flat paper color */
+      history.replaceState(null, "", "#about");
+      const doc = document.documentElement, sb = doc.style.scrollBehavior;
+      doc.style.scrollBehavior = "auto";
+      scrollTo(0, document.getElementById("about").offsetTop);
+      doc.style.scrollBehavior = sb;
+
+      /* the page assembles itself as the overlay clears. Each material
          moves the way it would in her hands: papers press down, tape
          stretches on, the pushpin pins in, charms swing to rest,
-         handwriting writes itself, typed text prints into focus. */
+         handwriting writes itself, typed text prints into focus.
+         fill:"backwards" holds each piece hidden until its turn and
+         hands the element back to its own styles when it's done. */
       const piece = (id, keyframes, opts) => {
-        const el = mini.querySelector("#" + id);
+        const el = document.getElementById(id);
         if (!el) return null;
         const base = el.style.transform || "";
         const frames = keyframes.map(k => {
@@ -453,29 +456,29 @@ const bookFX = (() => {
           if ("t" in f) { f.transform = (base + " " + f.t).trim(); delete f.t; }
           return f;
         });
-        return el.animate(frames, Object.assign({fill:"forwards",
+        return el.animate(frames, Object.assign({fill:"backwards",
           easing:"cubic-bezier(.3,.75,.3,1)"}, opts));
       };
-      const asm = [];
-      /* backing layers slip in low-key — they were "already in the book" */
-      [["ab-center-graph",0],["ab-graph-left",60],["ab-blue-strip",110],
-       ["ab-fragment",160],["ab-lace",210]].forEach(([id,d]) =>
+      const asm = [], origined = [];
+      /* backing layers slip in low-key — they set the table quietly */
+      [["ab-center-graph",140],["ab-graph-left",200],["ab-blue-strip",250],
+       ["ab-fragment",300],["ab-lace",350]].forEach(([id,d]) =>
         asm.push(piece(id, [
           {opacity:0, t:"scale(.985)"},
           {opacity:1, t:"scale(1)"}], {delay:d, duration:320})));
       /* papers press down onto the page */
-      [["ab-intro-paper",250],["ab-exp-paper",330],["ab-int-paper",410],
-       ["ab-thanks-paper",480]].forEach(([id,d]) =>
+      [["ab-intro-paper",380],["ab-exp-paper",460],["ab-int-paper",540],
+       ["ab-thanks-paper",610]].forEach(([id,d]) =>
         asm.push(piece(id, [
           {opacity:0, t:"translateY(-10px) scale(1.045)"},
           {opacity:1, t:"translateY(0) scale(1.045)", offset:.4},
           {opacity:1, t:"translateY(0) scale(.992)",  offset:.72},
           {opacity:1, t:"translateY(0) scale(1)"}], {delay:d, duration:400})));
       /* tape stretches on from one end; the pushpin pins in */
-      [["ab-tape-cream",540,"0% 50%"],["ab-tape-a",600,"100% 50%"],
-       ["ab-tape-b",660,"0% 50%"]].forEach(([id,d,org]) => {
-        const el = mini.querySelector("#" + id);
-        if (el) el.style.transformOrigin = org;
+      [["ab-tape-cream",660,"0% 50%"],["ab-tape-a",720,"100% 50%"],
+       ["ab-tape-b",780,"0% 50%"]].forEach(([id,d,org]) => {
+        const el = document.getElementById(id);
+        if (el) { el.style.transformOrigin = org; origined.push(el); }
         asm.push(piece(id, [
           {opacity:0, t:"scaleX(.35)"},
           {opacity:1, t:"scaleX(1.04)", offset:.7},
@@ -485,12 +488,12 @@ const bookFX = (() => {
         {opacity:0, t:"translateY(-16px) scale(1.3)"},
         {opacity:1, t:"translateY(1px) scale(.94)", offset:.6},
         {opacity:1, t:"translateY(0) scale(1)"}],
-        {delay:580, duration:300, easing:"cubic-bezier(.5,.05,.3,1)"}));
+        {delay:700, duration:300, easing:"cubic-bezier(.5,.05,.3,1)"}));
       /* charms drop and swing to rest like they're dangling */
-      [["ab-key",640],["ab-evil-eye",720],["ab-floral",790],
-       ["ab-paperclip",850]].forEach(([id,d]) => {
-        const el = mini.querySelector("#" + id);
-        if (el) el.style.transformOrigin = "50% 6%";
+      [["ab-key",760],["ab-evil-eye",840],["ab-floral",910],
+       ["ab-paperclip",970]].forEach(([id,d]) => {
+        const el = document.getElementById(id);
+        if (el) { el.style.transformOrigin = "50% 6%"; origined.push(el); }
         asm.push(piece(id, [
           {opacity:0, t:"translateY(-12px) rotate(9deg)"},
           {opacity:1, t:"translateY(0) rotate(-4deg)", offset:.42},
@@ -499,51 +502,26 @@ const bookFX = (() => {
           {delay:d, duration:600, easing:"cubic-bezier(.35,.6,.35,1)"}));
       });
       /* handwriting writes itself across, left to right */
-      [["ab-hey",700,600],["ab-exp-head",860,460],["ab-int-head",980,420]]
+      [["ab-hey",820,600],["ab-exp-head",980,460],["ab-int-head",1090,420]]
         .forEach(([id,d,dur]) =>
           asm.push(piece(id, [
             {opacity:1, clipPath:"inset(-5% 102% -5% -2%)"},
             {opacity:1, clipPath:"inset(-5% -2% -5% -2%)"}],
             {delay:d, duration:dur, easing:"cubic-bezier(.4,.1,.6,.9)"})));
       /* typed text prints into focus */
-      [["ab-intro",940],["ab-exp",1050],["ab-int",1150]].forEach(([id,d]) =>
+      [["ab-intro",1060],["ab-exp",1170],["ab-int",1270]].forEach(([id,d]) =>
         asm.push(piece(id, [
           {opacity:0, filter:"blur(2.5px)"},
           {opacity:1, filter:"blur(0px)"}], {delay:d, duration:340})));
-      await Promise.all(asm.filter(Boolean).map(a => a.finished));
-      await new Promise(r => setTimeout(r, 120));  /* a breath, then in */
+      Promise.all(asm.filter(Boolean).map(a => a.finished))
+        .then(() => origined.forEach(el => el.style.transformOrigin = ""))
+        .catch(() => {});
 
-      /* 4 — dive: the finished spread zooms in as one, spine and all,
-         until the miniature is pixel-aligned with the real section */
-      const aScale = Math.min(vw/1672, vh/941);    /* real About scale */
-      const s2 = aScale/c;
-      const scx = SL+SW/2, scy = ST+SH/2;          /* spread center    */
-      const dx = vw/2 - (bx+scx), dy = vh/2 - (by+scy);
-      book.style.transformOrigin = scx + "px " + scy + "px";
-      dim.animate([{backgroundColor:"rgba(24,19,14,.52)"},
-                   {backgroundColor:"rgba(242,239,235,1)"}],
-        {duration:560, easing:"ease-in", fill:"both"});
-      await book.animate([
-        {transform:"translate(0,0) scale(1)"},
-        {transform:`translate(${dx}px,${dy}px) scale(${s2})`}
-      ], {duration:720, easing:"cubic-bezier(.55,.05,.18,1)", fill:"both"}).finished;
-
-      /* 5 — landed. The real section takes over underneath; the book's
-         page texture and spine shadow dissolve out of the zoomed-in
-         view, then the overlay (now identical to the page) fades away */
-      history.replaceState(null, "", "#about");
-      const doc = document.documentElement, sb = doc.style.scrollBehavior;
-      doc.style.scrollBehavior = "auto";
-      scrollTo(0, document.getElementById("about").offsetTop);
-      doc.style.scrollBehavior = sb;
-      book.querySelector("img").animate([{opacity:1},{opacity:0}],
-        {duration:300, easing:"ease-out", fill:"both"});
       await fx.animate([{opacity:1},{opacity:0}],
-        {duration:300, delay:140, easing:"ease-out", fill:"both"}).finished;
+        {duration:260, delay:60, easing:"ease-out", fill:"both"}).finished;
     } finally {
       fx.classList.remove("on");
       for (const a of fx.getAnimations({subtree:true})) a.cancel();
-      aboutPage.replaceChildren();               /* drop the miniature */
       book.style.transformOrigin = "";
       lock(false); running = false;
     }
