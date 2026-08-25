@@ -154,9 +154,13 @@ nav,nav a,nav .mono img{transition:color .35s ease,filter .35s ease}
 .wk>img{width:100%;height:100%;display:block}
 /* cards are straight high-res PNGs; tilt, corners, and shadow are
    live CSS so nothing is baked or resampled */
-.wk-card{overflow:hidden;transform:rotate(var(--ang,0deg));
-  box-shadow:0 4px 10px rgba(50,60,80,.20)}
-.wk-card img{width:100%;height:100%;object-fit:cover}
+/* the rounded corners come from a soft-edged mask rather than a hard
+   overflow clip, so a tilted card's borders antialias instead of
+   stair-stepping; the drop-shadow follows the masked shape */
+.wk-card{transform:rotate(var(--ang,0deg));
+  filter:drop-shadow(0 4px 9px rgba(50,60,80,.22))}
+.wk-card img{width:100%;height:100%;object-fit:cover;display:block;
+  border-radius:inherit}
 .wk-card a,.wk-label a{position:absolute;inset:0;display:block;color:inherit;text-decoration:none}
 @media (prefers-reduced-motion:no-preference){
   .wk-card{transition:transform .3s cubic-bezier(.3,.8,.3,1)}
@@ -290,9 +294,9 @@ nav,nav a,nav .mono img{transition:color .35s ease,filter .35s ease}
 </section>
 
 <section id="work" aria-label="My work">
-  <div class="wk-bgfull" aria-hidden="true"><img src="assets/work/bg.jpg" alt=""></div>
+  <div class="wk-bgfull" aria-hidden="true"><img src="assets/work/bg-blur.jpg" alt=""></div>
   <div id="work-canvas">
-    <div class="wk" id="wk-bg" aria-hidden="true"><img src="assets/work/bg.jpg" alt=""></div>
+    <div class="wk" id="wk-bg" aria-hidden="true"><img src="assets/work/bg-wide.jpg" alt=""></div>
     <div class="wk" id="wk-head"><img src="assets/work/my-work.png" alt="my work"></div>
     <div class="wk" id="wk-caption">A selection of projects I&rsquo;ve had the privilege to work on.</div>
     <!-- project cards are built from the PROJECTS array in the script -->
@@ -739,7 +743,7 @@ if ("IntersectionObserver" in window) {
    pushpin (center point), and the label card with its text. Move,
    resize, retitle, add or remove projects here. */
 const WORK_LAYOUT = {
-  "wk-bg":      {x:   0, y:   0, w: 1672, h: 941, z: 0},
+  "wk-bg":      {x:-400, y:-100, w: 2472, h: 1141, z: 0},
   "wk-head":    {x: 700, y:  85, w:  275, h:  95, z: 2},
   "wk-caption": {x: 436, y: 176, w:  800, h:  22, z: 2},
   "wk-where":   {x: 586, y: 886, w:  500, h:  48, z: 2},
