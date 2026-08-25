@@ -728,19 +728,19 @@ const WORK_LAYOUT = {
   "wk-where":   {x: 586, y: 886, w:  500, h:  48, z: 2},
 };
 const PROJECTS = [
-  {id:"cuelens",    card:{x: 290, y: 219, w: 450, h: 263}, pin:{x: 308, y: 222},
+  {id:"cuelens",    img:"assets/work/card-cuelens.png",    card:{x: 290, y: 219, w: 450, h: 263}, pin:{x: 308, y: 222},
    label:{x: 417, y: 462, w: 200, h: 88},
    title:"CueLens", desc:"AI-powered design analysis<br>to understand user intent."},
-  {id:"magnus",     card:{x: 873, y: 225, w: 456, h: 276}, pin:{x: 890, y: 230},
+  {id:"magnus",     img:"assets/work/card-magnus.png",     card:{x: 873, y: 225, w: 456, h: 276}, pin:{x: 890, y: 230},
    label:{x: 955, y: 462, w: 212, h: 90},
    title:"Magnus United<br>Website Redesign", desc:"Coming Soon"},
-  {id:"brainage",   card:{x: 231, y: 590, w: 349, h: 201}, pin:{x: 236, y: 593},
+  {id:"brainage",   img:"assets/work/card-brainage.png",   card:{x: 231, y: 590, w: 349, h: 201}, pin:{x: 236, y: 593},
    label:{x: 299, y: 782, w: 221, h: 86},
    title:"Brain Age Calculator", desc:"Quantifying brain wellness<br>using MRI and neuroscience."},
-  {id:"airesearch", card:{x: 634, y: 606, w: 318, h: 204}, pin:{x: 650, y: 602},
+  {id:"airesearch", img:"assets/work/card-airesearch.png", card:{x: 634, y: 606, w: 318, h: 204}, pin:{x: 650, y: 602},
    label:{x: 687, y: 787, w: 183, h: 70},
    title:"AI Research", desc:"Coming Soon"},
-  {id:"magnusmap",  card:{x:1010, y: 576, w: 405, h: 210}, pin:{x:1017, y: 585},
+  {id:"magnusmap",  img:"assets/work/card-magnusmap.png",  card:{x:1010, y: 576, w: 405, h: 210}, pin:{x:1017, y: 585},
    label:{x:1107, y: 776, w: 215, h: 86},
    title:"Magnus Map", desc:"Real-time geospatial mapping<br>and coordination platform."},
 ];
@@ -758,7 +758,7 @@ if (workCanvas) {
     card.className = "wk wk-card"; card.id = "wk-card-" + pr.id;
     Object.assign(card.style, {left:pr.card.x+"px", top:pr.card.y+"px",
       width:pr.card.w+"px", height:pr.card.h+"px", zIndex:1});
-    card.innerHTML = '<img src="assets/work/card-' + pr.id + '.png" alt="">';
+    card.innerHTML = '<img src="' + pr.img + '" alt="">';
     const pin = document.createElement("div");
     pin.className = "wk wk-pin"; pin.id = "wk-pin-" + pr.id;
     Object.assign(pin.style, {left:(pr.pin.x-14.5)+"px", top:(pr.pin.y-14.5)+"px",
