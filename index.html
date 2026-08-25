@@ -161,7 +161,14 @@ nav,nav a,nav .mono img{transition:color .35s ease,filter .35s ease}
    the project screenshot over it, a pushpin, and the caption card.
    The lace sheet is larger than the screenshot, so the card's exact
    shape never has to line up with anything underneath. */
-.wk-lace img{width:100%;height:100%;display:block}
+.wk-lace img{width:100%;height:100%;display:block;
+  /* fade the sheet out at its own edges so its crop never reads as a box */
+  -webkit-mask-image:linear-gradient(to right,transparent 0,#000 10px,#000 calc(100% - 10px),transparent 100%),
+                     linear-gradient(to bottom,transparent 0,#000 10px,#000 calc(100% - 10px),transparent 100%);
+  -webkit-mask-composite:source-in;
+  mask-image:linear-gradient(to right,transparent 0,#000 10px,#000 calc(100% - 10px),transparent 100%),
+             linear-gradient(to bottom,transparent 0,#000 10px,#000 calc(100% - 10px),transparent 100%);
+  mask-composite:intersect}
 .wk-card{transform:rotate(var(--ang,0deg))}
 .wk-card img{width:100%;height:100%;object-fit:cover;display:block}
 .wk-pin img{width:100%;height:100%;display:block;
@@ -175,8 +182,6 @@ nav,nav a,nav .mono img{transition:color .35s ease,filter .35s ease}
 .wk-label .ld{position:relative;text-align:center;white-space:nowrap;
   font-family:"Courier Prime","Courier New",monospace;color:#605c5b;
   font-size:12.5px;line-height:1.55;margin-top:4px}
-#wk-where{text-align:center;font-size:13px;letter-spacing:.15em;line-height:2.05;
-  text-transform:uppercase;color:#5478a8}
 
 /* notebook is now a doorway to #about */
 #notebook a{cursor:pointer}
@@ -295,7 +300,6 @@ nav,nav a,nav .mono img{transition:color .35s ease,filter .35s ease}
     <div class="wk" id="wk-bg" aria-hidden="true"><img src="assets/work/bg-wide.jpg" alt=""></div>
     <div class="wk" id="wk-head"><img src="assets/work/my-work.png" alt="my work"></div>
     <!-- project cards are built from the PROJECTS array in the script -->
-    <div class="wk" id="wk-where">Bay Area, CA<br>University of Washington, Seattle</div>
   </div>
 </section>
 
@@ -740,36 +744,35 @@ if ("IntersectionObserver" in window) {
 const WORK_LAYOUT = {
   "wk-bg":      {x:-400, y:-100, w: 2472, h: 1141, z: 0},
   "wk-head":    {x: 700, y:  92, w:  275, h:  95, z: 6},
-  "wk-where":   {x: 586, y: 884, w:  500, h:  48, z: 6},
 };
 const PROJECTS = [
-  {id:"cuelens", href:"https://cuelensai.vercel.app/",
+  {id:"cuelens", laceImg:"assets/work/lace-cuelens.jpg", cardImg:"assets/work/card-cuelens.png", href:"https://cuelensai.vercel.app/",
    lace:{x: 256, y: 196, w: 534, h: 332},
    card:{x: 297, y: 227, w: 434, h: 247, ang: 0},
    pin: {x: 315, y: 226},
    label:{x: 414, y: 468, w: 214, h: 82, padTop: 12},
    title:"CueLens", desc:"AI-powered design analysis<br>to understand user intent."},
 
-  {id:"magnus",
+  {id:"magnus", laceImg:"assets/work/lace-magnus.jpg",
    lace:{x: 836, y: 206, w: 538, h: 374},
    card:null, pin:null,
    label:{x: 962, y: 452, w: 218, h: 108, padTop: 14},
    title:"Magnus United<br>Website Redesign", desc:"Coming Soon"},
 
-  {id:"brainage", href:"https://brainage-calculator.vercel.app/",
+  {id:"brainage", laceImg:"assets/work/lace-brainage.jpg", cardImg:"assets/work/card-brainage.png", href:"https://brainage-calculator.vercel.app/",
    lace:{x: 186, y: 564, w: 434, h: 248},
    card:{x: 205, y: 590, w: 374, h: 192, ang: 0},
    pin: {x: 233, y: 589},
    label:{x: 296, y: 786, w: 234, h:  88, padTop: 12},
    title:"Brain Age Calculator", desc:"Quantifying brain wellness<br>using MRI and neuroscience."},
 
-  {id:"airesearch",
+  {id:"airesearch", laceImg:"assets/work/lace-airesearch.jpg",
    lace:{x: 606, y: 576, w: 340, h: 244},
    card:null, pin:null,
    label:{x: 690, y: 788, w: 190, h:  78, padTop: 12},
    title:"AI Research", desc:"Coming Soon"},
 
-  {id:"magnusmap", href:"https://aashvigeddam.github.io/magnus-map/",
+  {id:"magnusmap", laceImg:"assets/work/lace-magnusmap.jpg", cardImg:"assets/work/card-magnusmap.png", href:"https://aashvigeddam.github.io/magnus-map/",
    lace:{x: 986, y: 546, w: 464, h: 266},
    card:{x:1017, y: 574, w: 402, h: 208, ang: 0},
    pin: {x:1010, y: 582},
@@ -801,7 +804,7 @@ if (workCanvas) {
     const lace = document.createElement("div");
     lace.className = "wk wk-lace"; lace.id = "wk-lace-" + pr.id;
     lace.setAttribute("aria-hidden", "true");
-    lace.innerHTML = '<img src="assets/work/lace-' + pr.id + '.png" alt="">';
+    lace.innerHTML = '<img src="' + pr.laceImg + '" alt="">';
     pieces.push(place(lace, pr.lace, 1));
 
     /* the screenshot; the two "coming soon" projects have none */
@@ -810,7 +813,7 @@ if (workCanvas) {
       card.className = "wk wk-card"; card.id = "wk-card-" + pr.id;
       place(card, pr.card, 2);
       card.style.setProperty("--ang", (pr.card.ang || 0) + "deg");
-      card.innerHTML = wkLink(pr, '<img src="assets/work/card-' + pr.id + '.png" alt="">',
+      card.innerHTML = wkLink(pr, '<img src="' + pr.cardImg + '" alt="">',
         pr.title.replace(/<br>/g, " ") + " — open site");
       pieces.push(card);
     }
