@@ -138,6 +138,24 @@ nav,nav a,nav .mono img{transition:color .35s ease,filter .35s ease}
 #ab-int .row img{flex:0 0 auto}
 /* notebook is now a doorway to #about */
 #notebook a{cursor:pointer}
+
+/* ---- book transition: zoom into the notebook, flip to About -------
+   The overlay clones the open notebook, glides it to center over a
+   dimmed landing, riffles four paper pages around the spine, then
+   dives into the last page — which is the About section's exact
+   background color — so the cut to #about is invisible. */
+#book-fx{position:fixed;inset:0;z-index:100;display:none}
+#book-fx.on{display:block}
+#book-fx .fx-dim{position:absolute;inset:0;background:rgba(24,19,14,.52);opacity:0}
+#book-fx .fx-book{position:absolute;will-change:transform,opacity;
+  filter:drop-shadow(0 26px 54px rgba(0,0,0,.45))}
+#book-fx .fx-book>img{position:absolute;inset:0;width:100%;height:100%}
+#book-fx .fx-about-page{position:absolute;background:#f2efeb;border-radius:2px}
+#book-fx .fx-pages{position:absolute;perspective:1500px}
+#book-fx .fx-page{position:absolute;inset:1.2% 2.5% 1.2% 0;transform-origin:0% 50%;will-change:transform;
+  border-radius:2px 5px 5px 2px;
+  background:linear-gradient(100deg,#f8f4eb 0%,#f1ebdf 55%,#e7e0d1 100%);
+  box-shadow:inset 14px 0 20px -14px rgba(90,70,50,.4),3px 4px 10px rgba(60,45,30,.22)}
 </style>
 </head>
 <body>
@@ -229,6 +247,16 @@ nav,nav a,nav .mono img{transition:color .35s ease,filter .35s ease}
   </div>
 </section>
 
+<!-- book transition overlay: built by the notebook click handler -->
+<div id="book-fx" aria-hidden="true">
+  <div class="fx-dim"></div>
+  <div class="fx-book">
+    <img src="assets/notebook-open.png" alt="">
+    <div class="fx-about-page"></div>
+    <div class="fx-pages"></div>
+  </div>
+</div>
+
 <script>
 /* canvas coordinates (1440 x 900). w/h tuned to each asset's true aspect. */
 const LAYOUT = {
@@ -310,10 +338,131 @@ if (ASSETS.notebookOpen) {
   if (matchMedia("(hover:hover)").matches) {
     nb.addEventListener("mouseenter", open);
     nb.addEventListener("mouseleave", shut);
-  } else {
-    nb.addEventListener("click", () => nb.dataset.open ? (delete nb.dataset.open, shut()) : (nb.dataset.open = 1, open()));
   }
+
+  /* click: zoom into the book, riffle its pages, land on About */
+  nb.addEventListener("click", e => {
+    if (matchMedia("(prefers-reduced-motion: reduce)").matches) return; /* plain jump */
+    e.preventDefault();
+    open();                                  /* read as the open book while it lifts */
+    const from = nb.getBoundingClientRect();
+    const fromAngle = nb.style.transform.includes("-18") ? -14 : -5;
+    nb.style.opacity = "0";                  /* the overlay clone takes over */
+    bookFX(from, fromAngle).finally(() => { shut(); nb.style.opacity = ""; });
+  });
 }
+
+/* ---- the transition itself ---------------------------------------
+   Timeline: glide+grow to center (0.7s) -> four overlapping page
+   flips around the spine (~1s) -> dive into the About-colored page
+   until it fills the screen (0.6s) -> instant scroll under the flat
+   color, overlay fades, scrapbook pieces settle in one by one.     */
+const bookFX = (() => {
+  const fx = document.getElementById("book-fx");
+  const dim = fx.querySelector(".fx-dim");
+  const book = fx.querySelector(".fx-book");
+  const pagesBox = fx.querySelector(".fx-pages");
+  const aboutPage = fx.querySelector(".fx-about-page");
+  const PG = {l:.500, r:.966, t:.024, b:.974};   /* right page of the art */
+  const AR = 806/496;                            /* open-book aspect */
+  let running = false;
+
+  const swallow = e => e.preventDefault();
+  const lock = on => ["wheel","touchmove","keydown"].forEach(t =>
+    on ? addEventListener(t, swallow, {passive:false})
+       : removeEventListener(t, swallow, {passive:false}));
+
+  return async function(from, fromAngle){
+    if (running) return; running = true; lock(true);
+    try {
+      const vw = innerWidth, vh = innerHeight;
+
+      /* resting spot: open book centered, ~72% of the viewport height */
+      const bh = Math.min(vh*.72, vw*.92/AR), bw = bh*AR;
+      const bx = (vw-bw)/2, by = (vh-bh)/2;
+      Object.assign(book.style, {left:bx+"px", top:by+"px", width:bw+"px", height:bh+"px"});
+
+      const pl = PG.l*bw, pt = PG.t*bh, pw = (PG.r-PG.l)*bw, ph = (PG.b-PG.t)*bh;
+      for (const el of [pagesBox, aboutPage])
+        Object.assign(el.style, {left:pl+"px", top:pt+"px", width:pw+"px", height:ph+"px"});
+
+      pagesBox.innerHTML = "";
+      const flips = Array.from({length:4}, (_, i) => {
+        const p = document.createElement("div");
+        p.className = "fx-page"; p.style.zIndex = 10-i;
+        pagesBox.appendChild(p); return p;
+      });
+
+      fx.classList.add("on");
+
+      /* 1 — lift off the landing page and glide to center */
+      const s0 = from.height/bh;
+      const dx0 = from.left + from.width/2 - (bx+bw/2);
+      const dy0 = from.top + from.height/2 - (by+bh/2);
+      const glide = book.animate([
+        {transform:`translate(${dx0}px,${dy0}px) rotate(${fromAngle}deg) scale(${s0})`, opacity:0},
+        {opacity:1, offset:.14},
+        {transform:"translate(0,0) rotate(0deg) scale(1.02)", offset:.8},
+        {transform:"translate(0,0) rotate(0deg) scale(1)", opacity:1}
+      ], {duration:850, easing:"cubic-bezier(.32,.72,.25,1)", fill:"both"});
+      dim.animate([{opacity:0},{opacity:1}],
+        {duration:600, easing:"ease-out", fill:"both"});
+
+      /* 2 — riffle: each page turns left over the spine */
+      const turn = (el, delay, dur, end) => el.animate([
+        {transform:"rotateY(0deg)", filter:"brightness(1)"},
+        {transform:`rotateY(${end*.55}deg)`, filter:"brightness(.94)", offset:.45},
+        {transform:`rotateY(${end}deg)`, filter:"brightness(1)"}
+      ], {delay, duration:dur, easing:"cubic-bezier(.45,.05,.22,1)", fill:"both"});
+      const riffle = [
+        turn(flips[0],  600, 460, -177.5),
+        turn(flips[1],  780, 480, -175.5),
+        turn(flips[2],  960, 500, -178.5),
+        turn(flips[3], 1140, 520, -179.5),
+      ];
+      await Promise.all([glide, ...riffle].map(a => a.finished));
+
+      /* 3 — dive into the About-colored page until it fills the screen;
+         the spent pages fade so no pile edge peeks past the spine     */
+      pagesBox.animate([{opacity:1},{opacity:0}],
+        {duration:220, easing:"ease-out", fill:"both"});
+      const s2 = Math.max(vw/pw, vh/ph) * 1.12;
+      const dx = vw/2 - (bx+pl+pw/2), dy = vh/2 - (by+pt+ph/2);
+      book.style.transformOrigin = (pl+pw/2) + "px " + (pt+ph/2) + "px";
+      await book.animate([
+        {transform:"translate(0,0) scale(1)"},
+        {transform:`translate(${dx}px,${dy}px) scale(${s2})`}
+      ], {duration:620, easing:"cubic-bezier(.55,.02,.2,1)", fill:"both"}).finished;
+
+      /* 4 — cut to #about while the screen is one flat paper color */
+      history.replaceState(null, "", "#about");
+      const doc = document.documentElement, sb = doc.style.scrollBehavior;
+      doc.style.scrollBehavior = "auto";
+      scrollTo(0, document.getElementById("about").offsetTop);
+      doc.style.scrollBehavior = sb;
+
+      /* pieces settle in: backing layers first, text last */
+      [...document.querySelectorAll("#about-canvas .ab")]
+        .sort((a,b) => (+a.style.zIndex||0)-(+b.style.zIndex||0) || a.offsetLeft-b.offsetLeft)
+        .forEach((el, i) => {
+          const base = el.style.transform || "";
+          el.animate([
+            {transform: base + " translateY(14px)", opacity:0},
+            {transform: base, opacity:1}
+          ], {delay:120+i*30, duration:480,
+              easing:"cubic-bezier(.2,.85,.3,1)", fill:"backwards"});
+        });
+
+      await fx.animate([{opacity:1},{opacity:0}],
+        {duration:340, delay:80, easing:"ease-out", fill:"both"}).finished;
+    } finally {
+      fx.classList.remove("on");
+      for (const a of fx.getAnimations({subtree:true})) a.cancel();
+      book.style.transformOrigin = "";
+      lock(false); running = false;
+    }
+  };
+})();
 
 /* ---- skills patch cluster ----------------------------------------
    Add / remove / reorder skills here. Coordinates are the patch's
