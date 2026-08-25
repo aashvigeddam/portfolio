@@ -161,16 +161,9 @@ nav,nav a,nav .mono img{transition:color .35s ease,filter .35s ease}
    the project screenshot over it, a pushpin, and the caption card.
    The lace sheet is larger than the screenshot, so the card's exact
    shape never has to line up with anything underneath. */
-.wk-lace img{width:100%;height:100%;display:block;
-  /* fade the sheet out at its own edges so its crop never reads as a box */
-  -webkit-mask-image:linear-gradient(to right,transparent 0,#000 10px,#000 calc(100% - 10px),transparent 100%),
-                     linear-gradient(to bottom,transparent 0,#000 10px,#000 calc(100% - 10px),transparent 100%);
-  -webkit-mask-composite:source-in;
-  mask-image:linear-gradient(to right,transparent 0,#000 10px,#000 calc(100% - 10px),transparent 100%),
-             linear-gradient(to bottom,transparent 0,#000 10px,#000 calc(100% - 10px),transparent 100%);
-  mask-composite:intersect}
+.wk-lace img{width:100%;height:100%;display:block}
 .wk-card{transform:rotate(var(--ang,0deg))}
-.wk-card img{width:100%;height:100%;object-fit:cover;display:block}
+.wk-card img{width:100%;height:100%;object-fit:cover;display:block;border-radius:10px}
 .wk-pin img{width:100%;height:100%;display:block;
   filter:drop-shadow(0 2px 3px rgba(40,50,70,.38))}
 .wk-card a,.wk-label a{position:absolute;inset:0;display:block;color:inherit;text-decoration:none}
@@ -746,33 +739,33 @@ const WORK_LAYOUT = {
   "wk-head":    {x: 700, y:  92, w:  275, h:  95, z: 6},
 };
 const PROJECTS = [
-  {id:"cuelens", laceImg:"assets/work/lace-cuelens.jpg", cardImg:"assets/work/card-cuelens.png", href:"https://cuelensai.vercel.app/",
+  {id:"cuelens", laceImg:"assets/work/lace-cuelens.png", cardImg:"assets/work/card-cuelens.jpg", href:"https://cuelensai.vercel.app/",
    lace:{x: 256, y: 196, w: 534, h: 332},
    card:{x: 297, y: 227, w: 434, h: 247, ang: 0},
    pin: {x: 315, y: 226},
    label:{x: 414, y: 468, w: 214, h: 82, padTop: 12},
    title:"CueLens", desc:"AI-powered design analysis<br>to understand user intent."},
 
-  {id:"magnus", laceImg:"assets/work/lace-magnus.jpg",
+  {id:"magnus", laceImg:"assets/work/lace-magnus.png",
    lace:{x: 836, y: 206, w: 538, h: 374},
    card:null, pin:null,
    label:{x: 962, y: 452, w: 218, h: 108, padTop: 14},
    title:"Magnus United<br>Website Redesign", desc:"Coming Soon"},
 
-  {id:"brainage", laceImg:"assets/work/lace-brainage.jpg", cardImg:"assets/work/card-brainage.png", href:"https://brainage-calculator.vercel.app/",
+  {id:"brainage", laceImg:"assets/work/lace-brainage.png", cardImg:"assets/work/card-brainage.jpg", href:"https://brainage-calculator.vercel.app/",
    lace:{x: 186, y: 564, w: 434, h: 248},
    card:{x: 205, y: 590, w: 374, h: 192, ang: 0},
    pin: {x: 233, y: 589},
    label:{x: 296, y: 786, w: 234, h:  88, padTop: 12},
    title:"Brain Age Calculator", desc:"Quantifying brain wellness<br>using MRI and neuroscience."},
 
-  {id:"airesearch", laceImg:"assets/work/lace-airesearch.jpg",
+  {id:"airesearch", laceImg:"assets/work/lace-airesearch.png",
    lace:{x: 606, y: 576, w: 340, h: 244},
    card:null, pin:null,
    label:{x: 690, y: 788, w: 190, h:  78, padTop: 12},
    title:"AI Research", desc:"Coming Soon"},
 
-  {id:"magnusmap", laceImg:"assets/work/lace-magnusmap.jpg", cardImg:"assets/work/card-magnusmap.png", href:"https://aashvigeddam.github.io/magnus-map/",
+  {id:"magnusmap", laceImg:"assets/work/lace-magnusmap.png", cardImg:"assets/work/card-magnusmap.jpg", href:"https://aashvigeddam.github.io/magnus-map/",
    lace:{x: 986, y: 546, w: 464, h: 266},
    card:{x:1017, y: 574, w: 402, h: 208, ang: 0},
    pin: {x:1010, y: 582},
