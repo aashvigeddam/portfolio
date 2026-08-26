@@ -3,8 +3,26 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<link rel="icon" href="data:,">
 <title>Aashvi Geddam</title>
+<meta name="description" content="Portfolio of Aashvi Geddam — cognitive science student at the University of Washington, working in UI/UX and AI-human interaction.">
+<meta name="author" content="Aashvi Geddam">
+<meta name="theme-color" content="#f2efeb">
+<link rel="canonical" href="https://aashvigeddam.com/">
+<link rel="icon" type="image/png" sizes="32x32" href="assets/favicon-32.png">
+<link rel="apple-touch-icon" sizes="180x180" href="assets/favicon-180.png">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Aashvi Geddam">
+<meta property="og:title" content="Aashvi Geddam">
+<meta property="og:description" content="Cognitive science student at the University of Washington, working in UI/UX and AI-human interaction.">
+<meta property="og:url" content="https://aashvigeddam.com/">
+<meta property="og:image" content="https://aashvigeddam.com/assets/og.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="A scrapbook collage over the Golden Gate Bridge: a photo of Aashvi, a leather notebook, a camera, and a cluster of app charms.">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Aashvi Geddam">
+<meta name="twitter:description" content="Cognitive science student at the University of Washington, working in UI/UX and AI-human interaction.">
+<meta name="twitter:image" content="https://aashvigeddam.com/assets/og.jpg">
 <style>
 /* ============================================================
    aashvigeddam.com v2 — landing page
@@ -13,7 +31,6 @@
    Edit positions in LAYOUT, assets in ASSETS (bottom of file).
    ============================================================ */
 :root{ --ink:#fff; }
-@font-face{font-family:"Cedarville Cursive";src:url("assets/fonts/CedarvilleCursive.ttf") format("truetype");font-display:swap}
 @font-face{font-family:"Courier Prime";src:url("assets/fonts/CourierPrime.ttf") format("truetype");font-display:swap}
 *{box-sizing:border-box;margin:0;padding:0}
 html{height:100%}
@@ -201,10 +218,9 @@ nav,nav a,nav .mono img{transition:color .35s ease,filter .35s ease}
 <body>
 
 <div class="bg" aria-hidden="true">
-  <img src="assets/sf-poster.jpg" alt="">
-  <video autoplay muted loop playsinline poster="assets/sf-poster.jpg">
-    <source src="assets/sf-background.mp4" type="video/mp4">
-  </video>
+  <img src="assets/sf-poster.jpg" alt="" fetchpriority="high">
+  <video muted loop playsinline preload="none" poster="assets/sf-poster.jpg"
+         data-src="assets/sf-background.mp4"></video>
   <div class="scrim"></div>
 </div>
 
@@ -254,44 +270,44 @@ nav,nav a,nav .mono img{transition:color .35s ease,filter .35s ease}
 <section id="about" aria-label="About me">
   <div id="about-canvas">
     <!-- paper + object layers (positions in ABOUT_LAYOUT) -->
-    <div class="ab" id="ab-center-graph" aria-hidden="true"><img src="assets/about/center-graph.png" alt=""></div>
-    <div class="ab" id="ab-graph-left"   aria-hidden="true"><img src="assets/about/graph-left.png" alt=""></div>
-    <div class="ab" id="ab-blue-strip"   aria-hidden="true"><img src="assets/about/blue-strip.png" alt=""></div>
-    <div class="ab" id="ab-fragment"     aria-hidden="true"><img src="assets/about/fragment.png" alt=""></div>
-    <div class="ab" id="ab-lace"         aria-hidden="true"><img src="assets/about/lace.png" alt=""></div>
-    <div class="ab" id="ab-intro-paper"  aria-hidden="true"><img src="assets/about/intro-paper.png" alt=""></div>
-    <div class="ab" id="ab-exp-paper"    aria-hidden="true"><img src="assets/about/exp-paper.png" alt=""></div>
-    <div class="ab" id="ab-int-paper"    aria-hidden="true"><img src="assets/about/int-paper.png" alt=""></div>
-    <div class="ab" id="ab-thanks-paper"><img src="assets/about/thanks-paper.png" alt="thanks for stopping by"></div>
-    <div class="ab" id="ab-tape-cream"   aria-hidden="true"><img src="assets/about/tape-cream.png" alt=""></div>
-    <div class="ab" id="ab-tape-a"       aria-hidden="true"><img src="assets/about/tape-grid-a.png" alt=""></div>
-    <div class="ab" id="ab-tape-b"       aria-hidden="true"><img src="assets/about/tape-grid-b.png" alt=""></div>
-    <div class="ab" id="ab-pushpin"      aria-hidden="true"><img src="assets/about/pushpin.png" alt=""></div>
-    <div class="ab" id="ab-key"          aria-hidden="true"><img src="assets/about/key.png" alt=""></div>
-    <div class="ab" id="ab-evil-eye"     aria-hidden="true"><img src="assets/about/evil-eye.png" alt=""></div>
-    <div class="ab" id="ab-paperclip"    aria-hidden="true"><img src="assets/about/paperclip.png" alt=""></div>
-    <div class="ab" id="ab-floral"       aria-hidden="true"><img src="assets/about/floral.png" alt=""></div>
+    <div class="ab" id="ab-center-graph" aria-hidden="true"><img loading="lazy" decoding="async" src="assets/about/center-graph.png" alt=""></div>
+    <div class="ab" id="ab-graph-left"   aria-hidden="true"><img loading="lazy" decoding="async" src="assets/about/graph-left.png" alt=""></div>
+    <div class="ab" id="ab-blue-strip"   aria-hidden="true"><img loading="lazy" decoding="async" src="assets/about/blue-strip.png" alt=""></div>
+    <div class="ab" id="ab-fragment"     aria-hidden="true"><img loading="lazy" decoding="async" src="assets/about/fragment.png" alt=""></div>
+    <div class="ab" id="ab-lace"         aria-hidden="true"><img loading="lazy" decoding="async" src="assets/about/lace.png" alt=""></div>
+    <div class="ab" id="ab-intro-paper"  aria-hidden="true"><img loading="lazy" decoding="async" src="assets/about/intro-paper.png" alt=""></div>
+    <div class="ab" id="ab-exp-paper"    aria-hidden="true"><img loading="lazy" decoding="async" src="assets/about/exp-paper.png" alt=""></div>
+    <div class="ab" id="ab-int-paper"    aria-hidden="true"><img loading="lazy" decoding="async" src="assets/about/int-paper.png" alt=""></div>
+    <div class="ab" id="ab-thanks-paper"><img loading="lazy" decoding="async" src="assets/about/thanks-paper.png" alt="thanks for stopping by"></div>
+    <div class="ab" id="ab-tape-cream"   aria-hidden="true"><img loading="lazy" decoding="async" src="assets/about/tape-cream.png" alt=""></div>
+    <div class="ab" id="ab-tape-a"       aria-hidden="true"><img loading="lazy" decoding="async" src="assets/about/tape-grid-a.png" alt=""></div>
+    <div class="ab" id="ab-tape-b"       aria-hidden="true"><img loading="lazy" decoding="async" src="assets/about/tape-grid-b.png" alt=""></div>
+    <div class="ab" id="ab-pushpin"      aria-hidden="true"><img loading="lazy" decoding="async" src="assets/about/pushpin.png" alt=""></div>
+    <div class="ab" id="ab-key"          aria-hidden="true"><img loading="lazy" decoding="async" src="assets/about/key.png" alt=""></div>
+    <div class="ab" id="ab-evil-eye"     aria-hidden="true"><img loading="lazy" decoding="async" src="assets/about/evil-eye.png" alt=""></div>
+    <div class="ab" id="ab-paperclip"    aria-hidden="true"><img loading="lazy" decoding="async" src="assets/about/paperclip.png" alt=""></div>
+    <div class="ab" id="ab-floral"       aria-hidden="true"><img loading="lazy" decoding="async" src="assets/about/floral.png" alt=""></div>
 
     <!-- text layers: real, selectable HTML -->
-    <div class="ab" id="ab-hey"><img src="assets/about/hey-art.png" alt="Nice to meet you!"></div>
+    <div class="ab" id="ab-hey"><img loading="lazy" decoding="async" src="assets/about/hey-art.png" alt="Nice to meet you!"></div>
     <div class="ab ab-type" id="ab-intro">
       <p>I&rsquo;m a cognitive science student interested in UI/UX and AI-human interaction.</p>
       <p>I build projects and design experiences around those interests, along with planning events and bringing people together, especially when there&rsquo;s a larger purpose behind the work.</p>
       <p>Whether I&rsquo;m working on a project or with a community, what matters most to me is creating something that leaves a lasting impact.</p>
     </div>
-    <div class="ab" id="ab-exp-head"><img src="assets/about/exp-head-art.png" alt="experience"></div>
+    <div class="ab" id="ab-exp-head"><img loading="lazy" decoding="async" src="assets/about/exp-head-art.png" alt="experience"></div>
     <div class="ab ab-type" id="ab-exp"></div>
-    <div class="ab" id="ab-int-head"><img src="assets/about/int-head-art.png" alt="you&rsquo;ll find me..."></div>
+    <div class="ab" id="ab-int-head"><img loading="lazy" decoding="async" src="assets/about/int-head-art.png" alt="you&rsquo;ll find me..."></div>
     <div class="ab ab-type" id="ab-int"></div>
     <span class="sr-only">thanks for stopping by</span>
   </div>
 </section>
 
 <section id="work" aria-label="My work">
-  <div class="wk-bgfull" aria-hidden="true"><img src="assets/work/bg-blur.jpg" alt=""></div>
+  <div class="wk-bgfull" aria-hidden="true"><img loading="lazy" decoding="async" src="assets/work/bg-blur.jpg" alt=""></div>
   <div id="work-canvas">
-    <div class="wk" id="wk-bg" aria-hidden="true"><img src="assets/work/bg-wide.jpg" alt=""></div>
-    <div class="wk" id="wk-head"><img src="assets/work/my-work.png" alt="my work"></div>
+    <div class="wk" id="wk-bg" aria-hidden="true"><img loading="lazy" decoding="async" src="assets/work/bg-wide.jpg" alt=""></div>
+    <div class="wk" id="wk-head"><img loading="lazy" decoding="async" src="assets/work/my-work.png" alt="my work"></div>
     <!-- project cards are built from the PROJECTS array in the script -->
   </div>
 </section>
@@ -366,13 +382,25 @@ for (const [id, p] of Object.entries(LAYOUT)) {
   }
 }
 
-/* background video: play at a fraction of real speed */
+/* background video: the poster is frame one, so the page paints without
+   waiting on 3MB of film. Fetch it once everything else has landed, and skip
+   it altogether under reduced-motion, where CSS hides it anyway. */
 const bgv = document.querySelector(".bg video");
 if (bgv) {
   const SLOW = 0.35;
   bgv.defaultPlaybackRate = SLOW;
   bgv.playbackRate = SLOW;
   bgv.addEventListener("play", () => { bgv.playbackRate = SLOW; });
+  const roll = () => {
+    if (!bgv.dataset.src) return;
+    if (matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    bgv.src = bgv.dataset.src; delete bgv.dataset.src;
+    bgv.playbackRate = SLOW;
+    bgv.play().catch(() => {});
+  };
+  const soon = () => (window.requestIdleCallback || (f => setTimeout(f, 200)))(roll);
+  if (document.readyState === "complete") soon();
+  else addEventListener("load", soon, {once:true});
 }
 
 /* notebook: closed -> open on hover, slightly larger, same tilt */
@@ -703,14 +731,14 @@ const EXPERIENCE = [
   ["Donerds Donuts,", "Consultant"],
   ["NYX Ventures,", "Research Intern"],
 ];
-const AB_STAR = '<img src="assets/about/star-row.png" width="46" height="46" alt="" aria-hidden="true">';
+const AB_STAR = '<img loading="lazy" decoding="async" src="assets/about/star-row.png" width="46" height="46" alt="" aria-hidden="true">';
 const expBox = document.getElementById("ab-exp");
 if (expBox) expBox.innerHTML = EXPERIENCE.map(([a,b]) =>
   '<div class="row">' + AB_STAR + '<div>' + a + '<br>' + b + '</div></div>').join("");
 
 /* interests — same tiny diamond beside every item */
 const INTERESTS = ["designing","exploring","driving creativity","building community","giving back"];
-const AB_DIAMOND = '<img src="assets/about/diamond.png" width="42" height="48" alt="" aria-hidden="true">';
+const AB_DIAMOND = '<img loading="lazy" decoding="async" src="assets/about/diamond.png" width="42" height="48" alt="" aria-hidden="true">';
 const intBox = document.getElementById("ab-int");
 if (intBox) intBox.innerHTML = INTERESTS.map(t =>
   '<div class="row">' + AB_DIAMOND + '<div>' + t + '</div></div>').join("");
@@ -795,7 +823,7 @@ if (workCanvas) {
     const lace = document.createElement("div");
     lace.className = "wk wk-lace"; lace.id = "wk-lace-" + pr.id;
     lace.setAttribute("aria-hidden", "true");
-    lace.innerHTML = '<img src="' + pr.laceImg + '" alt="">';
+    lace.innerHTML = '<img loading="lazy" decoding="async" src="' + pr.laceImg + '" alt="">';
     pieces.push(place(lace, pr.lace, 1));
 
     /* the screenshot; the two "coming soon" projects have none */
@@ -804,7 +832,7 @@ if (workCanvas) {
       card.className = "wk wk-card"; card.id = "wk-card-" + pr.id;
       place(card, pr.card, 2);
       card.style.setProperty("--ang", (pr.card.ang || 0) + "deg");
-      card.innerHTML = wkLink(pr, '<img src="' + pr.cardImg + '" alt="">',
+      card.innerHTML = wkLink(pr, '<img loading="lazy" decoding="async" src="' + pr.cardImg + '" alt="">',
         pr.title.replace(/<br>/g, " ") + " — open site");
       pieces.push(card);
     }
@@ -813,7 +841,7 @@ if (workCanvas) {
       pin.className = "wk wk-pin"; pin.id = "wk-pin-" + pr.id;
       pin.setAttribute("aria-hidden", "true");
       place(pin, {x:pr.pin.x - 15.5, y:pr.pin.y - 15.5, w:31, h:31}, 3);
-      pin.innerHTML = '<img src="assets/work/pin.png" alt="">';
+      pin.innerHTML = '<img loading="lazy" decoding="async" src="assets/work/pin.png" alt="">';
       pieces.push(pin);
     }
 
@@ -821,7 +849,7 @@ if (workCanvas) {
     label.className = "wk wk-label"; label.id = "wk-label-" + pr.id;
     place(label, pr.label, 4);
     label.innerHTML = wkLink(pr,
-      '<img class="paper" src="assets/work/label.png" alt="">' +
+      '<img loading="lazy" decoding="async" class="paper" src="assets/work/label.png" alt="">' +
       '<div class="lt" style="padding-top:' + pr.label.padTop + 'px">' + pr.title +
       '</div><div class="ld">' + pr.desc + '</div>');
     pieces.push(label);
@@ -836,7 +864,7 @@ if (ASSETS.deviceFrame) {
     '<div class="screen" style="left:' +
     (s.x*100) + '%;top:' + (s.y*100) + '%;width:' + (s.w*100) + '%;height:' + (s.h*100) + '%">' +
     (ASSETS.deviceVideo
-      ? '<video muted loop playsinline preload="metadata" src="' + ASSETS.deviceVideo + '"></video>'
+      ? '<video muted loop playsinline preload="none" src="' + ASSETS.deviceVideo + '"></video>'
       : '') +
     '</div>' +
     '<img class="frame" src="' + ASSETS.deviceFrame + '" alt="">';

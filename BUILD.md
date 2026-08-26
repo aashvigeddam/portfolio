@@ -57,3 +57,42 @@ New git repo in this folder (`git init`), never inside the existing aashvigeddam
 ## Reference image
 
 `reference/sebinjeon-target.png` is a full-page screenshot of sebinjeon.com, the layout target. Use it two ways: as the visual comparison when tuning LAYOUT positions (open it side by side with localhost and match placement, scale, and spacing), and as the answer key for the pending slots (the compact camera top-right is the device slot's composition target; the poster fan below it is the certstack target; the photobooth photo center is the photo treatment target). Two hard rules: this file never leaves the reference/ folder and never deploys — add `reference/` to .gitignore before the first commit — and nothing inside it is ever cropped out for use as a page asset. It is Sebin Jeon's work and exists here only as a measuring stick.
+
+---
+
+## Deploy — how it actually works now (Aug 2026)
+
+The site is live at aashvigeddam.com on Vercel. The Vercel project is **not**
+connected to git; deployments are uploaded from a local folder with the CLI:
+
+```powershell
+cd <folder holding index.html, assets/, vercel.json, .vercel/>
+npx.cmd vercel --prod        # npx.cmd, not npx — PowerShell blocks .ps1 shims
+```
+
+The `.vercel/` folder in that directory is what links it to the right project,
+so the domain updates on its own. The GitHub repo
+(`aashvigeddam/portfolio`, branches `main` and the working branch) is the
+source of truth for history, not a deploy path.
+
+## After any edit to index.html
+
+Run this, or the live site will load and then sit there doing nothing:
+
+```bash
+python3 tools/update-csp-hash.py
+```
+
+`vercel.json` allows exactly one inline script, pinned by its SHA-256. Change
+the script by a single character and the old hash no longer matches, so the
+browser refuses to run it. The tool re-stamps the hash from the current file.
+
+## Asset rules worth keeping
+
+- Anything under `assets/work/` is pixel-matched to the work backdrop — the
+  lace sheets are cut from `bg.jpg` itself so the paper tones can't seam.
+  Don't re-encode those files. Everything else is WebP, sized to roughly twice
+  its on-screen size.
+- The two videos are deliberately not on the critical path: the background
+  film loads after the page is done, the camera's demo clip only when someone
+  hovers or taps it.
