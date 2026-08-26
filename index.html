@@ -62,7 +62,7 @@ nav,nav a,nav .mono img{transition:color .35s ease,filter .35s ease}
   text-transform:uppercase;color:#fff;text-shadow:0 1px 10px rgba(0,0,0,.42)}
 #whereabouts span{font-size:12px;letter-spacing:.12em;opacity:.9}
 
-.doorlabel{font-size:22px;letter-spacing:.14em;text-transform:uppercase;
+.doorlabel{font-size:22px;letter-spacing:.06em;text-transform:uppercase;
   text-align:center;text-shadow:0 1px 10px rgba(0,0,0,.4)}
 
 /* ---- skills charm cluster ----------------------------------------
@@ -402,9 +402,9 @@ if (ASSETS.notebookOpen) {
 }
 
 /* ---- the transition itself ---------------------------------------
-   Timeline: glide+grow to center (0.7s) -> four overlapping page
-   flips around the spine (~1s) -> dive into the About-colored page
-   until it fills the screen (0.6s) -> instant scroll under the flat
+   Timeline: glide+grow to center (0.7s) -> nine overlapping page
+   flips around the spine (~0.8s) -> dive into the About-colored page
+   until it fills the screen (0.5s) -> instant scroll under the flat
    color, overlay fades, scrapbook pieces settle in one by one.     */
 const bookFX = (() => {
   const fx = document.getElementById("book-fx");
@@ -436,9 +436,10 @@ const bookFX = (() => {
         Object.assign(el.style, {left:pl+"px", top:pt+"px", width:pw+"px", height:ph+"px"});
 
       pagesBox.innerHTML = "";
-      const flips = Array.from({length:4}, (_, i) => {
+      const LEAVES = 9;
+      const flips = Array.from({length:LEAVES}, (_, i) => {
         const p = document.createElement("div");
-        p.className = "fx-page"; p.style.zIndex = 10-i;
+        p.className = "fx-page"; p.style.zIndex = 20-i;
         pagesBox.appendChild(p); return p;
       });
 
@@ -453,22 +454,19 @@ const bookFX = (() => {
         {opacity:1, offset:.14},
         {transform:"translate(0,0) rotate(0deg) scale(1.02)", offset:.8},
         {transform:"translate(0,0) rotate(0deg) scale(1)", opacity:1}
-      ], {duration:850, easing:"cubic-bezier(.32,.72,.25,1)", fill:"both"});
+      ], {duration:700, easing:"cubic-bezier(.32,.72,.25,1)", fill:"both"});
       dim.animate([{opacity:0},{opacity:1}],
-        {duration:600, easing:"ease-out", fill:"both"});
+        {duration:520, easing:"ease-out", fill:"both"});
 
       /* 2 — riffle: each page turns left over the spine */
       const turn = (el, delay, dur, end) => el.animate([
         {transform:"rotateY(0deg)", filter:"brightness(1)"},
         {transform:`rotateY(${end*.55}deg)`, filter:"brightness(.94)", offset:.45},
         {transform:`rotateY(${end}deg)`, filter:"brightness(1)"}
-      ], {delay, duration:dur, easing:"cubic-bezier(.45,.05,.22,1)", fill:"both"});
-      const riffle = [
-        turn(flips[0],  600, 460, -177.5),
-        turn(flips[1],  780, 480, -175.5),
-        turn(flips[2],  960, 500, -178.5),
-        turn(flips[3], 1140, 520, -179.5),
-      ];
+      ], {delay, duration:dur, easing:"cubic-bezier(.4,.06,.25,1)", fill:"both"});
+      /* leaves start close on each other's heels so the stack riffles */
+      const riffle = flips.map((el, i) =>
+        turn(el, 430 + i*56, 300 + (i%3)*22, -176.5 - (i%4)*.9));
       await Promise.all([glide, ...riffle].map(a => a.finished));
 
       /* 3 — dive into the About-colored page until it fills the screen;
@@ -481,7 +479,7 @@ const bookFX = (() => {
       await book.animate([
         {transform:"translate(0,0) scale(1)"},
         {transform:`translate(${dx}px,${dy}px) scale(${s2})`}
-      ], {duration:620, easing:"cubic-bezier(.55,.02,.2,1)", fill:"both"}).finished;
+      ], {duration:520, easing:"cubic-bezier(.55,.02,.2,1)", fill:"both"}).finished;
 
       /* 4 — cut to #about while the screen is one flat paper color */
       history.replaceState(null, "", "#about");
