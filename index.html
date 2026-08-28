@@ -183,7 +183,8 @@ nav,nav a,nav .mono img{transition:color .35s ease,filter .35s ease}
 .wk-card img{width:100%;height:100%;object-fit:cover;display:block;border-radius:10px}
 .wk-pin img{width:100%;height:100%;display:block;
   filter:drop-shadow(0 2px 3px rgba(40,50,70,.38))}
-.wk-card a,.wk-label a{position:absolute;inset:0;display:block;color:inherit;text-decoration:none}
+.wk-card a,.wk-label a,.wk-hot a{position:absolute;inset:0;display:block;color:inherit;text-decoration:none}
+.wk-hot{cursor:pointer}
 .wk-label{filter:drop-shadow(0 3px 7px rgba(50,60,80,.20))}
 .wk-label .paper{position:absolute;inset:0;width:100%;height:100%}
 .wk-label .lt{position:relative;text-align:center;
@@ -837,6 +838,14 @@ if (workCanvas) {
       card.innerHTML = wkLink(pr, '<img decoding="async" data-src="' + pr.cardImg + '" alt="">',
         pr.title.replace(/<br>/g, " ") + " — open site");
       pieces.push(card);
+    } else if (pr.href) {
+      /* no screenshot to click, so the sheet itself opens the project */
+      const hot = document.createElement("div");
+      hot.className = "wk wk-hot"; hot.id = "wk-hot-" + pr.id;
+      place(hot, pr.lace, 2);
+      hot.innerHTML = wkLink(pr, '<span></span>',
+        pr.title.replace(/<br>/g, " ") + " — open project");
+      pieces.push(hot);
     }
     if (pr.pin) {
       const pin = document.createElement("div");
