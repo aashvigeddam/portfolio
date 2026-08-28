@@ -120,12 +120,26 @@ nav,nav a,nav .mono img{transition:color .35s ease,filter .35s ease}
 .device .screen{position:absolute;z-index:1;background:#0b0b0c;overflow:hidden}
 .device .screen video{width:100%;height:100%;object-fit:contain;display:block}
 
-@media (max-width:640px){
+@media (max-width:900px){
   nav{top:18px;font-size:12px}
   nav .name{left:16px;font-size:15px}
   nav .mono{display:none}
   nav .links{right:16px;gap:16px}
 }
+
+/* ---- phones ------------------------------------------------------
+   A phone is not a small desktop. The desktop canvases are landscape
+   and cover- or contain-scaled to the viewport, which on a 390px screen
+   either throws half the page off the sides or shrinks the whole thing
+   to a 200px-tall strip. On narrow screens each section switches to its
+   own portrait canvas, anchored top-left and scaled to the width, and
+   the same components are re-placed down it by the *_M tables. The
+   section grows as tall as its canvas and the page scrolls.        */
+body.mobile #canvas,body.mobile #about-canvas,body.mobile #work-canvas{
+  top:0;left:0;transform-origin:0 0}
+body.mobile #landing,body.mobile #about,body.mobile #work{height:auto}
+body.mobile #wk-bg img{object-fit:cover}
+body.mobile #work .wk-bgfull{display:none}
 
 @media (prefers-reduced-motion:reduce){ .bg video{display:none} }
 
@@ -374,17 +388,54 @@ const ASSETS = {
   deviceScreen: {x: 0.0762, y: 0.3195, w: 0.4721, h: 0.5320},
 };
 
-for (const [id, p] of Object.entries(LAYOUT)) {
-  const el = document.getElementById(id);
-  if (!el) continue;
-  el.style.left = p.x + "px"; el.style.top = p.y + "px";
-  el.style.width = p.w + "px"; el.style.height = p.h + "px";
-  el.style.transform = "rotate(" + (p.r || 0) + "deg)";
-  if (ASSETS[id]) {
-    const img = '<img src="' + ASSETS[id] + '" alt="">';
-    el.innerHTML = p.href ? '<a href="' + p.href + '">' + img + "</a>" : img;
+/* ---- the same pieces, arranged down a phone -----------------------
+   A portrait canvas 430 units wide. Only what moves is listed; anything
+   absent keeps its desktop box. The centre column of the desktop layout
+   already reads well on a phone, so the photo and its scraps stay put
+   and the pieces that were out on the wings - the notebook, the camera,
+   the charms - come down the page underneath instead of off the sides. */
+const MW = 430;
+const LAYOUT_M = {
+  "scrap-hi":        {x: 108, y:   36, w: 214, h: 100},
+  "photo":           {x:  55, y:  128, w: 320, h: 375},
+  "doodle-disco":    {x:   4, y:  152, w:  62, h:  69},
+  "doodle-dragonfly":{x:  -2, y:  302, w:  74, h:  70},
+  "doodle-apple":    {x:   2, y:  424, w:  72, h:  76},
+  "doodle-sun":      {x: 360, y:  168, w:  66, h:  66},
+  "doodle-airplane": {x: 340, y:  304, w:  90, h:  90},
+  "scrap-welcome":   {x:  72, y:  478, w: 286, h:  79},
+  "notebook":        {x: 118, y:  604, w: 195, h: 217},
+  "label-about":     {x: 105, y:  836, w: 220, h:  30},
+  "device":          {x:  65, y:  894, w: 300, h: 198},
+  "label-exp":       {x:  65, y: 1104, w: 300, h:  30},
+  "skills":          {x:  70, y: 1148, w: 290, h: 250},
+  "label-cert":      {x:  75, y: 1406, w: 280, h:  30},
+  "soc-mail":        {x:  66, y: 1458, w:  69, h:  54},
+  "soc-ig":          {x: 152, y: 1461, w:  58, h:  49},
+  "soc-gh":          {x: 228, y: 1460, w:  54, h:  56},
+  "soc-li":          {x: 300, y: 1457, w:  57, h:  54},
+  "whereabouts":     {x:  25, y: 1532, w: 380, h:  56},
+};
+
+let MOB = matchMedia("(max-width: 900px)").matches;
+const geom = (base, mob) => (MOB && mob) ? mob : base;
+
+function placeLanding() {
+  for (const [id, p] of Object.entries(LAYOUT)) {
+    const el = document.getElementById(id);
+    if (!el) continue;
+    const g = geom(p, LAYOUT_M[id]);
+    el.style.left = g.x + "px"; el.style.top = g.y + "px";
+    el.style.width = g.w + "px"; el.style.height = g.h + "px";
+    el.style.transform = "rotate(" + (g.r != null ? g.r : (p.r || 0)) + "deg)";
+    if (ASSETS[id] && !el.dataset.filled) {
+      el.dataset.filled = "1";
+      const img = '<img src="' + ASSETS[id] + '" alt="">';
+      el.innerHTML = p.href ? '<a href="' + p.href + '">' + img + "</a>" : img;
+    }
   }
 }
+placeLanding();
 
 /* background video: the poster is frame one, so the page paints without
    waiting on 3MB of film. Fetch it once everything else has landed, and skip
@@ -675,14 +726,70 @@ if (skillsBox) {
 
 const W = 1440, H = 900;
 const AW = 1672, AH = 941;   /* about canvas design units */
+const MQ_MOB = matchMedia("(max-width: 900px)");
+const MOB_PAD = 52;
+/* fit() runs once here to size the canvases, long before the About and
+   Work tables further down the file exist. It may only re-deal the pieces
+   after that groundwork is laid. */
+let dealt = false;
+
+/* how far down a mobile canvas its pieces actually reach - text blocks
+   have no set height, so this is measured rather than declared */
+function canvasBottom(root, skip){
+  let b = 0;
+  for (const el of root.children) {
+    if (skip && el.id === skip) continue;
+    b = Math.max(b, (parseFloat(el.style.top) || 0) + (el.offsetHeight || 0));
+  }
+  return b;
+}
+
 function fit(){
-  const s = Math.max(innerWidth / W, innerHeight / H);
-  document.getElementById("canvas").style.transform =
-    "translate(-50%,-50%) scale(" + s + ")";
-  const a = Math.min(innerWidth / AW, innerHeight / AH);
-  document.getElementById("about-canvas").style.transform =
-    "translate(-50%,-50%) scale(" + a + ")";
+  const was = MOB;
+  MOB = MQ_MOB.matches;
+  document.body.classList.toggle("mobile", MOB);
+  /* On a phone the stack is measured from its own contents, so re-deal
+     every time: the experience and interests lists are built after the
+     first pass, and their star icons change the height again when they
+     load. Off the phone, only crossing the breakpoint needs a re-deal. */
+  if (dealt && (MOB || MOB !== was)) {
+    placeLanding();
+    placeAbout();
+    if (window.placeWork) placeWork();
+  }
+  const canvas = document.getElementById("canvas");
+  const ac = document.getElementById("about-canvas");
   const wc = document.getElementById("work-canvas");
+
+  if (MOB) {
+    /* scale to the width, but only so far - past about a 560px window the
+       page would just be a magnified phone, so it centres instead */
+    const s = Math.min(innerWidth / MW, 1.3);
+    const gutter = Math.round((innerWidth - MW * s) / 2);
+    const lay = (c, sid, bottom) => {
+      if (!c) return;
+      c.style.width = MW + "px";
+      c.style.left = gutter + "px";
+      c.style.transform = "scale(" + s + ")";
+      const h = Math.max(bottom + MOB_PAD, innerHeight / s);
+      c.style.height = h + "px";
+      document.getElementById(sid).style.height = (h * s) + "px";
+    };
+    lay(canvas, "landing", canvasBottom(canvas));
+    lay(ac, "about", canvasBottom(ac));
+    lay(wc, "work", window.placeWork ? placeWork() : canvasBottom(wc, "wk-bg"));
+    return;
+  }
+
+  for (const c of [canvas, ac, wc])
+    if (c) { c.style.width = ""; c.style.height = ""; c.style.left = ""; }
+  for (const id of ["landing", "about", "work"]) {
+    const e = document.getElementById(id); if (e) e.style.height = "";
+  }
+  const s = Math.max(innerWidth / W, innerHeight / H);
+  canvas.style.transform = "translate(-50%,-50%) scale(" + s + ")";
+  const a = Math.min(innerWidth / AW, innerHeight / AH);
+  ac.style.transform = "translate(-50%,-50%) scale(" + a + ")";
   if (wc) wc.style.transform = "translate(-50%,-50%) scale(" + a + ")";
 }
 addEventListener("resize", fit); fit();
@@ -724,15 +831,102 @@ const ABOUT_LAYOUT = {
   "ab-int-head":     {x:1288, y: 252, w: 238, h:  72, r: 0, z: 5},
   "ab-int":          {x:1300, y: 322, w: 226, r: 0, z: 5},
 };
-for (const [id, p] of Object.entries(ABOUT_LAYOUT)) {
-  const el = document.getElementById(id);
-  if (!el) continue;
-  el.style.left = p.x + "px"; el.style.top = p.y + "px";
-  el.style.width = p.w + "px";
-  if (p.h) el.style.height = p.h + "px";
-  el.style.transform = "rotate(" + (p.r || 0) + "deg)";
-  el.style.zIndex = p.z;
+/* ---- the same scrapbook, dealt down a 430-wide page ---------------
+   Heading, then the three papers one under another, each sized to the
+   type it holds. The heights are measured rather than declared: the
+   paragraphs reflow at this width and no fixed number would hold. Edit
+   the margins and gaps here; the stack follows from them. */
+const AB_M = {
+  top: 30, gap: 42,
+  hey:   {x:  26, w: 372, h: 129, after: 20},
+  intro: {x:  12, w: 406, tx: 40, tw: 326, tTop: 54, bot: 46},
+  exp:   {x:  20, w: 390, tx: 24, tw: 342, tTop: 116, bot: 36, headTop: 22},
+  int:   {x:  46, w: 338, tx: 40, tw: 250, tTop: 104, bot: 40, headTop: 26},
+  frag:  {x: -70, w: 380},   /* its own bow and key run off the edge,
+                                like the desktop page hides them */
+  thanks:{x:  40, w: 352, h: 107},
+};
+
+function placeAbout() {
+  const el = id => document.getElementById(id);
+  if (!MOB) {
+    for (const [id, p] of Object.entries(ABOUT_LAYOUT)) {
+      const e = el(id);
+      if (!e) continue;
+      e.style.left = p.x + "px"; e.style.top = p.y + "px";
+      e.style.width = p.w + "px";
+      e.style.height = p.h ? p.h + "px" : "";
+      e.style.transform = "rotate(" + (p.r || 0) + "deg)";
+      e.style.zIndex = p.z;
+    }
+    return;
+  }
+
+  const put = (id, x, y, w, h, z) => {
+    const e = el(id);
+    if (!e) return;
+    e.style.left = x + "px"; e.style.top = y + "px"; e.style.width = w + "px";
+    e.style.height = h ? h + "px" : "";
+    e.style.transform = "rotate(0deg)";
+    e.style.zIndex = z;
+  };
+  const tall = id => { const e = el(id); return e ? e.offsetHeight : 0; };
+
+  /* set the text widths first - the paper has to be told how tall to be */
+  const A = AB_M;
+  put("ab-intro", A.intro.x + A.intro.tx, 0, A.intro.tw, 0, 5);
+  put("ab-exp",   A.exp.x   + A.exp.tx,   0, A.exp.tw,   0, 5);
+  put("ab-int",   A.int.x   + A.int.tx,   0, A.int.tw,   0, 5);
+  const introH = tall("ab-intro"), expH = tall("ab-exp"), intH = tall("ab-int");
+
+  let y = A.top;
+  put("ab-hey", A.hey.x, y, A.hey.w, A.hey.h, 5);
+  y += A.hey.h + A.hey.after;
+
+  const ipH = A.intro.tTop + introH + A.intro.bot;
+  put("ab-intro-paper", A.intro.x, y, A.intro.w, ipH, 3);
+  put("ab-intro", A.intro.x + A.intro.tx, y + A.intro.tTop, A.intro.tw, 0, 5);
+  put("ab-pushpin", A.intro.x + 24, y + 4, 54, 52, 4);
+  put("ab-tape-a", A.intro.x + 274, y - 24, 130, 60, 4);
+  /* the key hangs off the intro paper's corner, where she put it */
+  put("ab-key", A.intro.x + A.intro.w - 92, y + ipH - 158, 86, 137, 4);
+  const introBottom = y + ipH;
+  y = introBottom + A.gap;
+
+  const epH = A.exp.tTop + expH + A.exp.bot;
+  put("ab-exp-paper", A.exp.x, y, A.exp.w, epH, 3);
+  put("ab-tape-cream", A.exp.x + 104, y - 26, 180, 59, 4);
+  put("ab-exp-head", A.exp.x + 34, y + A.exp.headTop, 250, 91, 5);
+  put("ab-exp", A.exp.x + A.exp.tx, y + A.exp.tTop, A.exp.tw, 0, 5);
+  put("ab-evil-eye", 330, y + epH - 78, 100, 110, 4);
+  const expY = y, expBottom = y + epH;
+  y = expBottom + A.gap;
+
+  const npH = A.int.tTop + intH + A.int.bot;
+  put("ab-int-paper", A.int.x, y, A.int.w, npH, 3);
+  put("ab-tape-b", A.int.x + 44, y - 26, 150, 56, 4);
+  put("ab-int-head", A.int.x + 56, y + A.int.headTop, 210, 64, 5);
+  put("ab-int", A.int.x + A.int.tx, y + A.int.tTop, A.int.tw, 0, 5);
+  put("ab-paperclip", A.int.x + 266, y - 12, 64, 86, 4);
+  put("ab-floral", A.int.x + 258, y + npH - 42, 66, 60, 4);
+  put("ab-lace", 344, y - 10, 86, npH + 20, 2);
+  const intY = y, intBottom = y + npH;
+  y = intBottom + A.gap;
+
+  const fh = Math.round(A.frag.w * 382 / 378);
+  for (const id of ["ab-fragment", "ab-frag-sheet", "ab-frag-tape", "ab-frag-bow"])
+    put(id, A.frag.x, y, A.frag.w, fh, 2);
+  y += fh + A.gap;
+
+  put("ab-thanks-paper", A.thanks.x, y, A.thanks.w, A.thanks.h, 3);
+  const end = y + A.thanks.h;
+
+  /* backing textures, behind everything */
+  put("ab-center-graph", 62, expY - 60, 306, 466, 1);
+  put("ab-graph-left", -50, intY + 40, 230, 300, 1);
+  put("ab-blue-strip", -10, end - 150, 440, 204, 1);
 }
+placeAbout();
 
 /* experience entries — edit here, first line company, second line role */
 const EXPERIENCE = [
@@ -810,15 +1004,82 @@ const PROJECTS = [
    label:{x:1104, y: 780, w: 220, h:  92, padTop: 12},
    title:"Magnus Map", desc:"Model of Magnus United’s<br>internal operations tool."},
 ];
+/* On a phone the four projects come down the page one after another.
+   Each keeps its own build - sheet, screenshot, pin, caption - and the
+   sheet is scaled to the column width; the caption card keeps its real
+   size, because its type is set in fixed pixels and shrinking the card
+   would push the words off it. */
+const MOB_WORK = {x: 18, laceW: 394, top: 168, gap: 46, labelGap: 12};
+const WORK_LAYOUT_M = {
+  "wk-head": {x: 78, y: 46, w: 275, h: 95, z: 6},
+};
+
+/* every piece's box, for whichever arrangement is in force */
+function workBoxes() {
+  const g = {};
+  let y = MOB_WORK.top;
+  for (const pr of PROJECTS) {
+    const L = pr.lace, lb = pr.label;
+    const pinBox = pr.pin && {x: pr.pin.x - 15.5, y: pr.pin.y - 15.5, w: 31, h: 31};
+    if (!MOB) {
+      g["wk-lace-" + pr.id] = L;
+      if (pr.card) g["wk-card-" + pr.id] = pr.card;
+      else if (pr.href) g["wk-hot-" + pr.id] = L;
+      if (pinBox) g["wk-pin-" + pr.id] = pinBox;
+      g["wk-label-" + pr.id] = lb;
+      continue;
+    }
+    const k = Math.min(MOB_WORK.laceW / L.w, 1);       /* never upscale a sheet */
+    const X = Math.round((MW - L.w * k) / 2);
+    const at = b => ({x: X + (b.x - L.x) * k, y: y + (b.y - L.y) * k,
+                      w: b.w * k, h: b.h * k});
+    g["wk-lace-" + pr.id] = {x: X, y: y, w: L.w * k, h: L.h * k};
+    if (pr.card) g["wk-card-" + pr.id] = at(pr.card);
+    else if (pr.href) g["wk-hot-" + pr.id] = g["wk-lace-" + pr.id];
+    if (pinBox) {
+      const q = at(pinBox); q.w = 31; q.h = 31;      /* the pin stays a pin */
+      g["wk-pin-" + pr.id] = q;
+    }
+    /* The caption keeps its real size - its type is set in fixed pixels -
+       but stays where it sits on the sheet, because each sheet carries a
+       printed caption of its own underneath that the card covers up. */
+    const lp = at(lb);
+    const lx = Math.max(6, Math.min(lp.x, MW - lb.w - 6));
+    g["wk-label-" + pr.id] = {x: lx, y: lp.y, w: lb.w, h: lb.h, ang: 0};
+    y = Math.max(y + L.h * k, lp.y + lb.h) + MOB_WORK.gap;
+  }
+  g.bottom = y;
+  return g;
+}
+
 const workCanvas = document.getElementById("work-canvas");
 if (workCanvas) {
-  for (const [id, p] of Object.entries(WORK_LAYOUT)) {
-    const el = document.getElementById(id);
-    if (!el) continue;
-    el.style.left = p.x + "px"; el.style.top = p.y + "px";
-    el.style.width = p.w + "px"; el.style.height = p.h + "px";
-    el.style.zIndex = p.z;
+  function placeWorkFrame() {
+    for (const [id, p] of Object.entries(WORK_LAYOUT)) {
+      const el = document.getElementById(id);
+      if (!el) continue;
+      const g = MOB && WORK_LAYOUT_M[id] ? WORK_LAYOUT_M[id]
+              : (MOB && id === "wk-bg")
+                ? {x: 0, y: 0, w: MW, h: workBoxes().bottom + 40, z: 0} : p;
+      if (id === "wk-bg") {
+        /* bg-wide carries the whole reference layout - the live cards sit
+           exactly over their printed twins. Stretched down a phone those
+           twins would surface, so the column gets a card-free slab of the
+           same sky instead. */
+        const img = el.querySelector("img");
+        const want = MOB ? "assets/work/bg-mobile.webp" : "assets/work/bg-wide.jpg";
+        if (img) {
+          if (img.dataset.src) img.dataset.src = want;
+          else if (!img.getAttribute("src") || !img.getAttribute("src").endsWith(want))
+            img.src = want;
+        }
+      }
+      el.style.left = g.x + "px"; el.style.top = g.y + "px";
+      el.style.width = g.w + "px"; el.style.height = g.h + "px";
+      el.style.zIndex = g.z != null ? g.z : p.z;
+    }
   }
+  placeWorkFrame();
   const wkLink = (pr, inner, aria) => pr.href
     ? '<a href="' + pr.href + '" target="_blank" rel="noopener"' +
       (aria ? ' aria-label="' + aria + '"' : '') + '>' + inner + '</a>'
@@ -876,6 +1137,21 @@ if (workCanvas) {
 
     workCanvas.append(...pieces);
   }
+
+  window.placeWork = function () {
+    placeWorkFrame();
+    const boxes = workBoxes();
+    for (const [id, b] of Object.entries(boxes)) {
+      if (id === "bottom") continue;
+      const el = document.getElementById(id);
+      if (!el) continue;
+      Object.assign(el.style, {left: b.x + "px", top: b.y + "px",
+        width: b.w + "px", height: b.h + "px"});
+      if (el.classList.contains("wk-card"))
+        el.style.setProperty("--ang", (b.ang || 0) + "deg");
+    }
+    return boxes.bottom;
+  };
 }
 
 /* ---- below-the-fold artwork ---------------------------------------
@@ -884,13 +1160,23 @@ if (workCanvas) {
    transition lands on a page that's already there), and failing all of
    that, a few seconds after the landing has finished loading. Nothing is
    ever left unfetched — the worst case is that it arrives late.        */
+let refitQueued = false;
+const refitSoon = () => {
+  if (refitQueued) return;
+  refitQueued = true;
+  requestAnimationFrame(() => { refitQueued = false; fit(); });
+};
 const hydrate = root => {
   if (!root || root.dataset.hydrated) return;
   root.dataset.hydrated = "1";
   root.querySelectorAll("img[data-src]").forEach(img => {
     img.src = img.dataset.src;
     img.removeAttribute("data-src");
+    /* a picture arriving changes how tall its row is, and on a phone the
+       papers are cut to fit their rows */
+    img.addEventListener("load", refitSoon, {once: true});
   });
+  refitSoon();
 };
 const SECTIONS = {about: document.getElementById("about"),
                   work:  document.getElementById("work")};
@@ -942,6 +1228,14 @@ if (ASSETS.deviceFrame) {
     });
   }
 }
+
+/* the mobile canvases are as tall as their contents, and the About and
+   Work pieces are built after the first fit() runs - so measure again
+   once everything is on the page, and again when the type has settled. */
+dealt = true;
+fit();
+addEventListener("load", fit);
+if (document.fonts && document.fonts.ready) document.fonts.ready.then(fit);
 </script>
 </body>
 </html>
