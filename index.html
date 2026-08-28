@@ -275,6 +275,9 @@ nav,nav a,nav .mono img{transition:color .35s ease,filter .35s ease}
     <div class="ab" id="ab-graph-left"   aria-hidden="true"><img decoding="async" data-src="assets/about/graph-left.webp" alt=""></div>
     <div class="ab" id="ab-blue-strip"   aria-hidden="true"><img decoding="async" data-src="assets/about/blue-strip.webp" alt=""></div>
     <div class="ab" id="ab-fragment"     aria-hidden="true"><img decoding="async" data-src="assets/about/fragment.webp" alt=""></div>
+    <div class="ab" id="ab-frag-sheet"   aria-hidden="true"><img decoding="async" data-src="assets/about/fragment-sheet.webp" alt=""></div>
+    <div class="ab" id="ab-frag-tape"    aria-hidden="true"><img decoding="async" data-src="assets/about/fragment-tape.webp" alt=""></div>
+    <div class="ab" id="ab-frag-bow"     aria-hidden="true"><img decoding="async" data-src="assets/about/fragment-trinket.webp" alt=""></div>
     <div class="ab" id="ab-lace"         aria-hidden="true"><img decoding="async" data-src="assets/about/lace.webp" alt=""></div>
     <div class="ab" id="ab-intro-paper"  aria-hidden="true"><img decoding="async" data-src="assets/about/intro-paper.webp" alt=""></div>
     <div class="ab" id="ab-exp-paper"    aria-hidden="true"><img decoding="async" data-src="assets/about/exp-paper.webp" alt=""></div>
@@ -539,7 +542,8 @@ const bookFX = (() => {
       const asm = [], origined = [];
       /* backing layers slip in low-key — they set the table quietly */
       [["ab-center-graph",140],["ab-graph-left",200],["ab-blue-strip",250],
-       ["ab-fragment",300],["ab-lace",350]].forEach(([id,d]) =>
+       ["ab-fragment",300],["ab-frag-sheet",300],["ab-frag-tape",300],
+       ["ab-frag-bow",300],["ab-lace",350]].forEach(([id,d]) =>
         asm.push(piece(id, [
           {opacity:0, t:"scale(.985)"},
           {opacity:1, t:"scale(1)"}], {delay:d, duration:320})));
@@ -691,7 +695,12 @@ const ABOUT_LAYOUT = {
   "ab-center-graph": {x: 628, y: 166, w: 484, h: 740, r: 0, z: 1},
   "ab-graph-left":   {x:   0, y: 540, w: 260, h: 340, r: 0, z: 1},
   "ab-blue-strip":   {x:   0, y: 700, w: 520, h: 241, r: 0, z: 1},
+  /* the quote page, then the pieces lying on it. Same box, stacked in order:
+     the page carries the writing edge to edge and these cover what they cover. */
   "ab-fragment":     {x: 580, y: 528, w: 378, h: 382, r: 0, z: 2},
+  "ab-frag-sheet":   {x: 580, y: 528, w: 378, h: 382, r: 0, z: 2},
+  "ab-frag-tape":    {x: 580, y: 528, w: 378, h: 382, r: 0, z: 2},
+  "ab-frag-bow":     {x: 580, y: 528, w: 378, h: 382, r: 0, z: 2},
   "ab-lace":         {x:1086, y: 186, w: 140, h: 610, r: 0, z: 2},
   /* papers */
   "ab-intro-paper":  {x:  60, y: 268, w: 555, h: 522, r: 0, z: 3},
