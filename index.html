@@ -970,12 +970,13 @@ const WORK_LAYOUT = {
   "wk-head":    {x: 700, y:  92, w:  275, h:  95, z: 6},
 };
 const PROJECTS = [
-  {id:"cuelens", laceImg:"assets/work/lace-cuelens.png", cardImg:"assets/work/card-cuelens.jpg", href:"https://cuelensai.vercel.app/",
+  {id:"eeg", laceImg:"assets/work/lace-cuelens.png", cardImg:"assets/work/card-eeg.jpg",
+   href:"https://github.com/aashvigeddam/seizure-protocols",
    lace:{x: 256, y: 196, w: 534, h: 332},
    card:{x: 297, y: 227, w: 434, h: 247, ang: 0},
    pin: {x: 295.9, y: 227},
    label:{x: 402, y: 468, w: 238, h: 82, padTop: 12},
-   title:"CueLens", desc:"AI-powered interface review<br>for conflicting visual cues."},
+   title:"ML EEG Research", desc:"EEG seizure detection, and how<br>the split changes the score."},
 
   {id:"magnus", laceImg:"assets/work/lace-magnus.png",
    lace:{x: 836, y: 206, w: 538, h: 374},
@@ -990,12 +991,15 @@ const PROJECTS = [
    label:{x: 296, y: 786, w: 234, h:  88, padTop: 12},
    title:"Brain Age Calculator", desc:"Estimates brain age from<br>structural MRI measurements."},
 
-  {id:"airesearch", laceImg:"assets/work/lace-airesearch.png",
-   href:"https://github.com/aashvigeddam/seizure-protocols",
+  {id:"cuelens", laceImg:"assets/work/lace-airesearch.png", cardImg:"assets/work/card-cuelens.jpg",
+   href:"https://cuelensai.vercel.app/",
    lace:{x: 606, y: 576, w: 340, h: 244},
-   card:null, pin:null,
-   label:{x: 690, y: 788, w: 190, h:  78, padTop: 12},
-   title:"AI Research", desc:"Coming Soon"},
+   /* this sheet is drawn with its own card and pin already on it, so the
+      screenshot is cut to that card and the pin on the paper is the pin */
+   card:{x: 634, y: 614, w: 304, h: 178, ang: 0},
+   pin: null,
+   label:{x: 657, y: 788, w: 238, h: 82, padTop: 12},
+   title:"CueLens", desc:"AI-powered interface review<br>for conflicting visual cues."},
 
   {id:"magnusmap", laceImg:"assets/work/lace-magnusmap.png", cardImg:"assets/work/card-magnusmap.jpg", href:"https://aashvigeddam.github.io/magnus-map/",
    lace:{x: 986, y: 546, w: 464, h: 266},
