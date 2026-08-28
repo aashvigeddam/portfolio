@@ -1000,7 +1000,7 @@ const PROJECTS = [
       it rather than on the sheet. The pin is a piece of its own here so the
       screenshot passes under it instead of across it. */
    card:{x: 650, y: 617, w: 278, h: 158, ang: -0.8},
-   pin: {x: 655, y: 605},
+   pin: null, overImg:"assets/work/pin-cuelens.png",
    label:{x: 657, y: 772, w: 238, h: 82, padTop: 12},
    title:"CueLens", desc:"AI-powered interface review<br>for conflicting visual cues."},
 
@@ -1033,6 +1033,7 @@ function workBoxes() {
       if (pr.card) g["wk-card-" + pr.id] = pr.card;
       else if (pr.href) g["wk-hot-" + pr.id] = L;
       if (pinBox) g["wk-pin-" + pr.id] = pinBox;
+      if (pr.overImg) g["wk-over-" + pr.id] = L;
       g["wk-label-" + pr.id] = lb;
       continue;
     }
@@ -1047,6 +1048,7 @@ function workBoxes() {
       const q = at(pinBox); q.w = 31; q.h = 31;      /* the pin stays a pin */
       g["wk-pin-" + pr.id] = q;
     }
+    if (pr.overImg) g["wk-over-" + pr.id] = g["wk-lace-" + pr.id];
     /* The caption keeps its real size - its type is set in fixed pixels -
        but stays where it sits on the sheet, because each sheet carries a
        printed caption of its own underneath that the card covers up. */
@@ -1131,6 +1133,16 @@ if (workCanvas) {
       place(pin, {x:pr.pin.x - 15.5, y:pr.pin.y - 15.5, w:31, h:31}, 3);
       pin.innerHTML = '<img decoding="async" data-src="assets/work/pin.png" alt="">';
       pieces.push(pin);
+    }
+
+    if (pr.overImg) {
+      /* a piece of the sheet's own artwork lifted in front of the screenshot,
+         drawn on the sheet's box so it lands exactly where it was cut from */
+      const over = document.createElement("div");
+      over.className = "wk wk-over"; over.id = "wk-over-" + pr.id;
+      over.setAttribute("aria-hidden", "true");
+      over.innerHTML = '<img decoding="async" data-src="' + pr.overImg + '" alt="">';
+      pieces.push(place(over, pr.lace, 3));
     }
 
     const label = document.createElement("div");
