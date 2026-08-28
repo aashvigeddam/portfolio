@@ -996,9 +996,12 @@ const PROJECTS = [
    lace:{x: 606, y: 576, w: 340, h: 244},
    /* this sheet came printed with its own blank card and a pin; the card is
       the paper the screenshot sits on and the pin on it is its pin */
-   card:{x: 646, y: 621, w: 290, h: 165, ang: 0},
-   pin: null,
-   label:{x: 657, y: 780, w: 238, h: 82, padTop: 12},
+   /* squared up to the paper's own cut, which leans 1.4deg, and centred on
+      it rather than on the sheet. The pin is a piece of its own here so the
+      screenshot passes under it instead of across it. */
+   card:{x: 650, y: 617, w: 278, h: 158, ang: -0.8},
+   pin: {x: 655, y: 605},
+   label:{x: 657, y: 772, w: 238, h: 82, padTop: 12},
    title:"CueLens", desc:"AI-powered interface review<br>for conflicting visual cues."},
 
   {id:"magnusmap", laceImg:"assets/work/lace-magnusmap.png", cardImg:"assets/work/card-magnusmap.jpg", href:"https://aashvigeddam.github.io/magnus-map/",
