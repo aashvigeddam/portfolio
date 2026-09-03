@@ -913,7 +913,7 @@ function fit(){
   /* the postcard sits a touch smaller and lower than the other pages'
      canvases, with the page's own cream showing around it */
   if (cc) cc.style.transform =
-    "translate(-50%, calc(-50% + 30px)) scale(" + (a * 0.78) + ")";
+    "translate(-50%, calc(-50% + 45px)) scale(" + (a * 0.84) + ")";
 }
 addEventListener("resize", fit); fit();
 
@@ -1304,7 +1304,7 @@ if (workCanvas) {
    so this one set of measurements lands the visitor's writing on the
    printed rules in either layout. */
 const CT_ART = {
-  head: {x: 405, y: 30, w: 685, h: 140, fs: 126},  /* the live script heading */
+  head: {x: 370, y: 14, w: 685, h: 140, fs: 126},  /* the live script heading */
   name: {x: 748, y: 410.5, w: 509},          /* the rule each field writes on */
   email:{x: 748, y: 496.5, w: 509},
   msg:  {x: 748, y: 589,   w: 509, step: 35.6, lines: 5},
