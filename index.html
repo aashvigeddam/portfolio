@@ -32,6 +32,7 @@
    ============================================================ */
 :root{ --ink:#fff; }
 @font-face{font-family:"Courier Prime";src:url("assets/fonts/CourierPrime.ttf") format("truetype");font-display:swap}
+@font-face{font-family:"Baby Bunny";src:url("assets/fonts/BabyBunny.ttf") format("truetype");font-display:swap}
 *{box-sizing:border-box;margin:0;padding:0}
 html{height:100%}
 body{min-height:100%;overflow-x:hidden;background:#111}
@@ -242,6 +243,10 @@ body.route-contact nav .mono{display:none}
 body:not(.mobile) #ct-hero-m,body:not(.mobile) #ct-info-m,body:not(.mobile) #ct-form-m{display:none}
 body.mobile #ct-bg{display:none}
 #ct-info-m img,#ct-form-m img{filter:drop-shadow(0 3px 9px rgba(95,85,65,.16))}
+/* the heading is live type in the site's own script - the artwork's
+   original pen lettering was lifted off the paper for it */
+#ct-head{z-index:2;display:flex;align-items:center;justify-content:center;
+  font-family:"Baby Bunny",cursive;color:#4b648f;white-space:nowrap;line-height:1}
 /* the form is invisible plumbing laid over the printed card: the art
    already drew the labels, rules and button, so the controls are
    transparent and only the visitor's own writing shows */
@@ -400,6 +405,7 @@ body.mobile #ct-bg{display:none}
     <div class="ct" id="ct-hero-m" aria-hidden="true"><img decoding="async" data-src="assets/contact/postcard-full.webp" alt=""></div>
     <div class="ct" id="ct-info-m" aria-hidden="true"><img decoding="async" data-src="assets/contact/info-m.webp" alt=""></div>
     <div class="ct" id="ct-form-m" aria-hidden="true"><img decoding="async" data-src="assets/contact/form-m.webp" alt=""></div>
+    <div class="ct" id="ct-head">write me a note</div>
 
     <form id="ct-form" novalidate>
       <input  class="ct-in" id="ct-name"  name="name"  type="text"  autocomplete="name"  maxlength="80"   aria-label="Your name">
@@ -899,7 +905,7 @@ function fit(){
   if (wc) wc.style.transform = "translate(-50%,-50%) scale(" + a + ")";
   /* the postcard sits a touch smaller than the other pages' canvases,
      with the page's own cream showing around it */
-  if (cc) cc.style.transform = "translate(-50%,-50%) scale(" + (a * 0.88) + ")";
+  if (cc) cc.style.transform = "translate(-50%,-50%) scale(" + (a * 0.78) + ")";
 }
 addEventListener("resize", fit); fit();
 
@@ -1290,6 +1296,7 @@ if (workCanvas) {
    so this one set of measurements lands the visitor's writing on the
    printed rules in either layout. */
 const CT_ART = {
+  head: {x: 450, y: 30, w: 685, h: 140, fs: 126},  /* the live script heading */
   name: {x: 748, y: 410.5, w: 509},          /* the rule each field writes on */
   email:{x: 748, y: 496.5, w: 509},
   msg:  {x: 748, y: 589,   w: 509, step: 35.6, lines: 5},
@@ -1321,6 +1328,7 @@ if (document.getElementById("contact-canvas")) {
       const k = CT_DESK.k, ox = CT_DESK.ox;
       setbox("ct-bg", {x: 0, y: 0, w: 1672, h: 941});
       map = p => ({x: ox + p.x * k, y: p.y * k, w: p.w * k, h: (p.h || 0) * k});
+      setbox("ct-head", map(A.head)).style.fontSize = Math.round(A.head.fs * k) + "px";
       fs = 19;
     } else {
       const M = CT_M;
@@ -1332,6 +1340,10 @@ if (document.getElementById("contact-canvas")) {
         setbox(id, {x: P.x, y: y, w: P.w, h: h});
         return {k: k, dx: P.x - c[0] * k, dy: y - c[1] * k, bottom: y + h};
       };
+      const kh = hero.w / 1448;               /* the heading rides the hero */
+      setbox("ct-head", {x: hero.x + A.head.x * kh, y: hero.y + A.head.y * kh,
+        w: A.head.w * kh, h: A.head.h * kh}).style.fontSize =
+        Math.round(A.head.fs * kh) + "px";
       const inf = piece("ct-info-m", M.info, hero.y + hero.h + M.gap);
       const frm = piece("ct-form-m", M.form, inf.bottom + M.gap);
       bottom = frm.bottom;
