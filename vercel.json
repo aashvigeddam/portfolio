@@ -20,7 +20,7 @@
       "headers": [
         {
           "key": "Content-Security-Policy",
-          "value": "default-src 'self'; base-uri 'self'; object-src 'none'; frame-ancestors 'none'; img-src 'self' data:; media-src 'self'; font-src 'self'; style-src 'self' 'unsafe-inline'; script-src 'self' 'sha256-KyLUAiW1y9oXqpgC6VYkV6xzoWltfErEQGJT0EW/HBM='; connect-src 'self' https://formsubmit.co; form-action 'none'; upgrade-insecure-requests"
+          "value": "default-src 'self'; base-uri 'self'; object-src 'none'; frame-ancestors 'none'; img-src 'self' data:; media-src 'self'; font-src 'self'; style-src 'self' 'unsafe-inline'; script-src 'self' 'sha256-ZhDGkfDCkUHm4/pA2X2mvP2GGUrR3g5wZbw0ysKFaBk='; connect-src 'self' https://formsubmit.co; form-action 'none'; upgrade-insecure-requests"
         },
         {
           "key": "X-Content-Type-Options",

@@ -897,7 +897,9 @@ function fit(){
   const a = Math.min(innerWidth / AW, innerHeight / AH);
   ac.style.transform = "translate(-50%,-50%) scale(" + a + ")";
   if (wc) wc.style.transform = "translate(-50%,-50%) scale(" + a + ")";
-  if (cc) cc.style.transform = "translate(-50%,-50%) scale(" + a + ")";
+  /* the postcard sits a touch smaller than the other pages' canvases,
+     with the page's own cream showing around it */
+  if (cc) cc.style.transform = "translate(-50%,-50%) scale(" + (a * 0.88) + ")";
 }
 addEventListener("resize", fit); fit();
 
