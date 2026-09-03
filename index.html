@@ -269,6 +269,13 @@ body.mobile #ct-bg{display:none}
 .ct-hot{z-index:3}
 .ct-hot a{position:absolute;inset:0;display:block}
 .ct-hot a:focus-visible{outline:1.5px dashed rgba(57,88,136,.45);outline-offset:2px}
+/* the find-me row answers a hover with a little underline */
+#ct-li a::after,#ct-gh a::after,#ct-ig a::after{content:"";position:absolute;
+  left:3px;right:3px;bottom:3px;height:1.5px;background:#4b648f;opacity:.85;
+  transform:scaleX(0);transform-origin:center;transition:transform .18s ease}
+#ct-li a:hover::after,#ct-gh a:hover::after,#ct-ig a:hover::after,
+#ct-li a:focus-visible::after,#ct-gh a:focus-visible::after,#ct-ig a:focus-visible::after{
+  transform:scaleX(1)}
 #ct-oops{position:absolute;z-index:3;display:none;text-align:center;
   font-family:"Courier Prime","Courier New",monospace;font-size:13px;color:#8c4a42}
 #ct-oops.show{display:block}
@@ -903,9 +910,10 @@ function fit(){
   const a = Math.min(innerWidth / AW, innerHeight / AH);
   ac.style.transform = "translate(-50%,-50%) scale(" + a + ")";
   if (wc) wc.style.transform = "translate(-50%,-50%) scale(" + a + ")";
-  /* the postcard sits a touch smaller than the other pages' canvases,
-     with the page's own cream showing around it */
-  if (cc) cc.style.transform = "translate(-50%,-50%) scale(" + (a * 0.78) + ")";
+  /* the postcard sits a touch smaller and lower than the other pages'
+     canvases, with the page's own cream showing around it */
+  if (cc) cc.style.transform =
+    "translate(-50%, calc(-50% + 30px)) scale(" + (a * 0.78) + ")";
 }
 addEventListener("resize", fit); fit();
 
@@ -1296,7 +1304,7 @@ if (workCanvas) {
    so this one set of measurements lands the visitor's writing on the
    printed rules in either layout. */
 const CT_ART = {
-  head: {x: 450, y: 30, w: 685, h: 140, fs: 126},  /* the live script heading */
+  head: {x: 405, y: 30, w: 685, h: 140, fs: 126},  /* the live script heading */
   name: {x: 748, y: 410.5, w: 509},          /* the rule each field writes on */
   email:{x: 748, y: 496.5, w: 509},
   msg:  {x: 748, y: 589,   w: 509, step: 35.6, lines: 5},
