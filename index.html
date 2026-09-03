@@ -1436,6 +1436,7 @@ if (document.getElementById("contact-canvas")) {
       btn.classList.remove("busy"); btn.classList.add("sent");
       word.textContent = "";
       btn.setAttribute("aria-label", "Note sent");
+      cform.reset();      /* the note is away - leave the card blank again */
     } catch (err) {
       btn.classList.remove("busy"); word.textContent = "";
       oops.classList.add("show");
