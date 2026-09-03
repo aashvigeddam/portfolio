@@ -170,6 +170,10 @@ body.route-contact{background:#ece8e3}
 .ab{position:absolute}
 .ab>img{width:100%;height:100%;display:block}
 .ab .row img{display:block}
+/* the entrance holds every piece back until it can start: the artwork
+   arrives over the network, and a page that paints itself finished and
+   then snaps back to the start of its own animation reads as a flash */
+body.ab-hold .ab{opacity:0}
 .sr-only{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
 #ab-thanks-paper img{filter:drop-shadow(0 4px 7px rgba(110,95,70,.35))}
 #ab-evil-eye img{filter:drop-shadow(0 3px 5px rgba(70,60,45,.32))}
@@ -1504,8 +1508,37 @@ if (ASSETS.deviceFrame) {
 dealt = true;
 fit();
 if (ROUTE === "about") {
+  /* Hold the scrapbook back before a single piece can paint. Waiting for
+     window.load to start the entrance let the finished page show itself
+     first and then snap back to the beginning of its own animation - the
+     flash after the book flips. Nothing shows now until the pieces are
+     ready, and the reveal and the animation happen in the same frame. */
+  const holdable = !matchMedia("(prefers-reduced-motion: reduce)").matches;
+  if (holdable) document.body.classList.add("ab-hold");
   hydrate(SECTIONS.about);
-  addEventListener("load", () => assembleAbout(), {once: true});
+  let opened = false;
+  const openAbout = () => {
+    if (opened) return;
+    opened = true;
+    document.body.classList.remove("ab-hold");
+    assembleAbout();        /* the animations fill backwards, so every piece
+                               stays hidden through its own delay */
+  };
+  if (!holdable) { openAbout(); }
+  else {
+    /* the page's own artwork is the cue - not the whole document, which
+       waits on the landing's video poster too */
+    let waiting = 0;
+    const ready = () => { if (--waiting <= 0) openAbout(); };
+    for (const im of document.querySelectorAll("#about-canvas img")) {
+      if (im.complete) continue;
+      waiting++;
+      im.addEventListener("load", ready, {once: true});
+      im.addEventListener("error", ready, {once: true});
+    }
+    if (!waiting) openAbout();
+    setTimeout(openAbout, 3000);     /* never hold the page hostage */
+  }
 } else if (ROUTE === "work") {
   hydrate(SECTIONS.work);
 } else if (ROUTE === "contact") {
