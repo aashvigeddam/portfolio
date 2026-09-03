@@ -69,11 +69,12 @@ nav .links{position:absolute;right:44px;display:flex;gap:52px;text-transform:upp
 nav a{color:#fff;text-decoration:none;opacity:.92}
 nav a:hover{opacity:1;text-decoration:underline;text-underline-offset:5px}
 /* over the About/Work sections the fixed nav switches to ink blue */
-body.on-about nav,body.on-work nav{color:#355c9a;text-shadow:none}
-body.on-about nav a,body.on-work nav a{color:#355c9a}
+body.on-about nav,body.on-work nav,body.on-contact nav{color:#355c9a;text-shadow:none}
+body.on-about nav a,body.on-work nav a,body.on-contact nav a{color:#355c9a}
 body.on-about nav a[href="/about"]{text-decoration:underline;text-underline-offset:6px}
 body.on-work nav a[href="/work"]{text-decoration:underline;text-underline-offset:6px}
-body.on-about nav .mono img,body.on-work nav .mono img{filter:brightness(0) saturate(100%) invert(29%) sepia(59%) saturate(1362%) hue-rotate(198deg) brightness(93%) contrast(96%)}
+body.on-contact nav a[href="/contact"]{text-decoration:underline;text-underline-offset:6px}
+body.on-about nav .mono img,body.on-work nav .mono img,body.on-contact nav .mono img{filter:brightness(0) saturate(100%) invert(29%) sepia(59%) saturate(1362%) hue-rotate(198deg) brightness(93%) contrast(96%)}
 nav,nav a,nav .mono img{transition:color .35s ease,filter .35s ease}
 
 #whereabouts{text-align:center;font-size:13px;letter-spacing:.15em;line-height:2.05;
@@ -137,9 +138,9 @@ nav,nav a,nav .mono img{transition:color .35s ease,filter .35s ease}
    own portrait canvas, anchored top-left and scaled to the width, and
    the same components are re-placed down it by the *_M tables. The
    section grows as tall as its canvas and the page scrolls.        */
-body.mobile #canvas,body.mobile #about-canvas,body.mobile #work-canvas{
+body.mobile #canvas,body.mobile #about-canvas,body.mobile #work-canvas,body.mobile #contact-canvas{
   top:0;left:0;transform-origin:0 0}
-body.mobile #landing,body.mobile #about,body.mobile #work{height:auto}
+body.mobile #landing,body.mobile #about,body.mobile #work,body.mobile #contact{height:auto}
 body.mobile #wk-bg img{object-fit:cover}
 body.mobile #work .wk-bgfull{display:none}
 
@@ -149,11 +150,13 @@ body.mobile #work .wk-bgfull{display:none}
    About lives at /about (vercel.json serves this same file there).
    One file, two doors: the route decides which sections exist, and
    the tables, layouts and phone arrangement are shared. */
-body.route-home #about,body.route-home #work{display:none}
-body.route-about #landing,body.route-about #work,body.route-about .bg{display:none}
+body.route-home #about,body.route-home #work,body.route-home #contact{display:none}
+body.route-about #landing,body.route-about #work,body.route-about #contact,body.route-about .bg{display:none}
 body.route-about{background:#f2efeb}
-body.route-work #landing,body.route-work #about,body.route-work .bg{display:none}
+body.route-work #landing,body.route-work #about,body.route-work #contact,body.route-work .bg{display:none}
 body.route-work{background:#bbc2cd}
+body.route-contact #landing,body.route-contact #about,body.route-contact #work,body.route-contact .bg{display:none}
+body.route-contact{background:#ece8e3}
 
 /* ============================================================
    ABOUT — scrapbook page. Canvas: 1672 x 941 design units
@@ -220,6 +223,52 @@ body.route-work{background:#bbc2cd}
   font-family:"Courier Prime","Courier New",monospace;color:#605c5b;
   font-size:12.5px;line-height:1.55;margin-top:4px}
 
+/* ============================================================
+   CONTACT — the postcard. Canvas: 1672 x 941 design units.
+   The artwork keeps its own 1448 x 1086 pixel grid; CT_ART holds
+   every measured box on that grid and placeContact() maps them
+   onto the desktop canvas or the phone's crop pieces.
+   ============================================================ */
+#contact{position:relative;height:100vh;overflow:hidden;background:#ece8e3;z-index:1}
+/* the postcard's own AG postmark is the monogram here — the nav logo
+   would sit right on top of the script heading */
+body.route-contact nav .mono{display:none}
+#contact-canvas{position:absolute;top:50%;left:50%;width:1672px;height:941px;
+  transform-origin:center center}
+.ct{position:absolute}
+.ct>img{width:100%;height:100%;display:block}
+/* the phone shows the intact postcard scene, then the card's two halves
+   as their own paper pieces; the desktop shows the one wide scene */
+body:not(.mobile) #ct-hero-m,body:not(.mobile) #ct-info-m,body:not(.mobile) #ct-form-m{display:none}
+body.mobile #ct-bg{display:none}
+#ct-info-m img,#ct-form-m img{filter:drop-shadow(0 3px 9px rgba(95,85,65,.16))}
+/* the form is invisible plumbing laid over the printed card: the art
+   already drew the labels, rules and button, so the controls are
+   transparent and only the visitor's own writing shows */
+#ct-form{position:absolute;inset:0;pointer-events:none;z-index:3}
+#ct-form .ct-in{position:absolute;pointer-events:auto;display:block;
+  background:transparent;border:0;border-radius:0;margin:0;padding:0 2px;
+  font-family:"Courier Prime","Courier New",monospace;
+  color:#395888;caret-color:#395888;outline:none}
+#ct-form .ct-in:focus-visible{outline:1.5px dashed rgba(57,88,136,.45);outline-offset:3px}
+#ct-msg{resize:none;overflow:auto;scrollbar-width:none}
+#ct-msg::-webkit-scrollbar{display:none}
+#ct-send{position:absolute;pointer-events:auto;background:transparent;border:0;
+  padding:0;margin:0;cursor:pointer;font-family:Georgia,"Times New Roman",serif}
+#ct-send .face{position:absolute;inset:2px;display:flex;align-items:center;justify-content:center;
+  background:#f2f0ea;color:#395888;letter-spacing:.18em;font-size:inherit;
+  opacity:0;pointer-events:none;transition:opacity .25s ease}
+#ct-send.busy .face,#ct-send.sent .face{opacity:1}
+#ct-send:focus-visible{outline:1.5px dashed rgba(57,88,136,.45);outline-offset:3px}
+/* the printed email address and the find-me row are live links */
+.ct-hot{z-index:3}
+.ct-hot a{position:absolute;inset:0;display:block}
+.ct-hot a:focus-visible{outline:1.5px dashed rgba(57,88,136,.45);outline-offset:2px}
+#ct-oops{position:absolute;z-index:3;display:none;text-align:center;
+  font-family:"Courier Prime","Courier New",monospace;font-size:13px;color:#8c4a42}
+#ct-oops.show{display:block}
+#ct-oops a{color:#395888}
+
 /* notebook is now a doorway to #about */
 #notebook a{cursor:pointer}
 
@@ -255,7 +304,7 @@ body.route-work{background:#bbc2cd}
   <span class="name">aashvi geddam</span>
   <span class="mono"><a href="/" aria-label="Home"><img src="assets/logo.webp" alt="AG monogram"></a></span>
   <span class="links">
-    <a href="/">Home</a><a href="/about">About Me</a><a href="/work">Work</a><a href="#">Let&rsquo;s Chat!</a>
+    <a href="/">Home</a><a href="/about">About Me</a><a href="/work">Work</a><a href="/contact">Let&rsquo;s Chat!</a>
   </span>
 </nav>
 
@@ -342,6 +391,32 @@ body.route-work{background:#bbc2cd}
   </div>
 </section>
 
+<section id="contact" aria-label="Let&rsquo;s chat">
+  <div id="contact-canvas">
+    <!-- the postcard scene: desktop gets the wide composition, the phone
+         gets the intact artwork plus the card's two halves (CT_ART maps
+         every printed rule, button and link onto whichever is showing) -->
+    <div class="ct" id="ct-bg"     aria-hidden="true"><img decoding="async" data-src="assets/contact/bg-contact.webp" alt=""></div>
+    <div class="ct" id="ct-hero-m" aria-hidden="true"><img decoding="async" data-src="assets/contact/postcard-full.webp" alt=""></div>
+    <div class="ct" id="ct-info-m" aria-hidden="true"><img decoding="async" data-src="assets/contact/info-m.webp" alt=""></div>
+    <div class="ct" id="ct-form-m" aria-hidden="true"><img decoding="async" data-src="assets/contact/form-m.webp" alt=""></div>
+
+    <form id="ct-form" novalidate>
+      <input  class="ct-in" id="ct-name"  name="name"  type="text"  autocomplete="name"  maxlength="80"   aria-label="Your name">
+      <input  class="ct-in" id="ct-email" name="email" type="email" autocomplete="email" maxlength="120"  aria-label="Your email">
+      <textarea class="ct-in" id="ct-msg" name="message" maxlength="2000" aria-label="Your message"></textarea>
+      <input type="text" name="_honey" tabindex="-1" autocomplete="off" style="display:none" aria-hidden="true">
+      <button type="submit" id="ct-send" aria-label="Send your note"><span class="face"></span></button>
+    </form>
+    <div id="ct-oops">didn&rsquo;t send &mdash; <a href="mailto:aashvi.geddam@gmail.com">email me instead</a></div>
+
+    <div class="ct ct-hot" id="ct-mail"><a href="mailto:aashvi.geddam@gmail.com" aria-label="Email aashvi.geddam@gmail.com"></a></div>
+    <div class="ct ct-hot" id="ct-li"><a href="https://www.linkedin.com/in/aashvi-geddam" target="_blank" rel="noopener" aria-label="LinkedIn"></a></div>
+    <div class="ct ct-hot" id="ct-gh"><a href="https://github.com/aashvigeddam" target="_blank" rel="noopener" aria-label="GitHub"></a></div>
+    <div class="ct ct-hot" id="ct-ig"><a href="https://www.instagram.com/aashvigeddam/" target="_blank" rel="noopener" aria-label="Instagram"></a></div>
+  </div>
+</section>
+
 <!-- book transition overlay: built by the notebook click handler -->
 <div id="book-fx" aria-hidden="true">
   <div class="fx-dim"></div>
@@ -357,10 +432,11 @@ body.route-work{background:#bbc2cd}
    /about is this same file behind another door. Decide the door first,
    before anything paints. */
 const ROUTE = /^\/about\/?$/.test(location.pathname) ? "about"
-            : /^\/work\/?$/.test(location.pathname) ? "work" : "home";
+            : /^\/work\/?$/.test(location.pathname) ? "work"
+            : /^\/contact\/?$/.test(location.pathname) ? "contact" : "home";
 document.body.classList.add("route-" + ROUTE);
 if (ROUTE !== "home") {
-  document.body.classList.add(ROUTE === "about" ? "on-about" : "on-work");
+  document.body.classList.add("on-" + ROUTE);
   const nm = document.querySelector("nav .name");
   if (nm) nm.innerHTML = '<a href="/" style="color:inherit;text-decoration:none">' +
                          nm.textContent + "</a>";
@@ -783,10 +859,12 @@ function fit(){
     placeLanding();
     placeAbout();
     if (window.placeWork) placeWork();
+    if (window.placeContact) placeContact();
   }
   const canvas = document.getElementById("canvas");
   const ac = document.getElementById("about-canvas");
   const wc = document.getElementById("work-canvas");
+  const cc = document.getElementById("contact-canvas");
 
   if (MOB) {
     /* scale to the width, but only so far - past about a 560px window the
@@ -805,12 +883,13 @@ function fit(){
     lay(canvas, "landing", canvasBottom(canvas));
     lay(ac, "about", canvasBottom(ac));
     lay(wc, "work", window.placeWork ? placeWork() : canvasBottom(wc, "wk-bg"));
+    lay(cc, "contact", window.placeContact ? placeContact() : canvasBottom(cc));
     return;
   }
 
-  for (const c of [canvas, ac, wc])
+  for (const c of [canvas, ac, wc, cc])
     if (c) { c.style.width = ""; c.style.height = ""; c.style.left = ""; }
-  for (const id of ["landing", "about", "work"]) {
+  for (const id of ["landing", "about", "work", "contact"]) {
     const e = document.getElementById(id); if (e) e.style.height = "";
   }
   const s = Math.max(innerWidth / W, innerHeight / H);
@@ -818,6 +897,7 @@ function fit(){
   const a = Math.min(innerWidth / AW, innerHeight / AH);
   ac.style.transform = "translate(-50%,-50%) scale(" + a + ")";
   if (wc) wc.style.transform = "translate(-50%,-50%) scale(" + a + ")";
+  if (cc) cc.style.transform = "translate(-50%,-50%) scale(" + a + ")";
 }
 addEventListener("resize", fit); fit();
 
@@ -1200,6 +1280,125 @@ if (workCanvas) {
   };
 }
 
+/* ---- contact page -------------------------------------------------
+   Every printed control on the postcard, measured on the artwork's own
+   1448 x 1086 pixel grid. The desktop canvas is that artwork scaled by
+   941/1086 and centred at x=208 (exactly how bg-contact.webp was
+   composed), and each phone piece is a straight crop of the same grid,
+   so this one set of measurements lands the visitor's writing on the
+   printed rules in either layout. */
+const CT_ART = {
+  name: {x: 748, y: 410.5, w: 509},          /* the rule each field writes on */
+  email:{x: 748, y: 496.5, w: 509},
+  msg:  {x: 748, y: 589,   w: 509, step: 35.6, lines: 5},
+  send: {x: 1050, y: 782, w: 201, h: 60},
+  mail: {x: 274, y: 705, w: 286, h: 36},     /* the printed links, made live */
+  li:   {x: 240, y: 840, w: 84, h: 30},
+  gh:   {x: 377, y: 840, w: 68, h: 34},
+  ig:   {x: 498, y: 842, w: 98, h: 32},
+};
+const CT_DESK = {k: 941 / 1086, ox: 208};
+const CT_M = {                                /* the phone's postcard stack */
+  top: 56, gap: 20,                           /* clears the fixed nav */
+  hero: {x: 0, w: 430},                       /* the whole scene, intact */
+  info: {x: 15, w: 400, crop: [180, 450, 680, 950]},
+  form: {x: 0,  w: 430, crop: [700, 244, 1448, 1086]},
+};
+
+if (document.getElementById("contact-canvas")) {
+  const cEl = id => document.getElementById(id);
+  const setbox = (id, b) => { const n = cEl(id); if (!n) return n;
+    Object.assign(n.style, {left: Math.round(b.x) + "px", top: Math.round(b.y) + "px",
+      width: Math.round(b.w) + "px", height: Math.round(b.h) + "px"});
+    return n; };
+
+  window.placeContact = function () {
+    const A = CT_ART;
+    let map, fs, bottom = 0;
+    if (!MOB) {
+      const k = CT_DESK.k, ox = CT_DESK.ox;
+      setbox("ct-bg", {x: 0, y: 0, w: 1672, h: 941});
+      map = p => ({x: ox + p.x * k, y: p.y * k, w: p.w * k, h: (p.h || 0) * k});
+      fs = 19;
+    } else {
+      const M = CT_M;
+      const hero = {x: M.hero.x, y: M.top, w: M.hero.w,
+                    h: Math.round(M.hero.w * 1086 / 1448)};
+      setbox("ct-hero-m", hero);
+      const piece = (id, P, y) => {
+        const c = P.crop, k = P.w / (c[2] - c[0]), h = Math.round((c[3] - c[1]) * k);
+        setbox(id, {x: P.x, y: y, w: P.w, h: h});
+        return {k: k, dx: P.x - c[0] * k, dy: y - c[1] * k, bottom: y + h};
+      };
+      const inf = piece("ct-info-m", M.info, hero.y + hero.h + M.gap);
+      const frm = piece("ct-form-m", M.form, inf.bottom + M.gap);
+      bottom = frm.bottom;
+      /* two crops, two maps: the artwork x says which piece a box is on */
+      map = p => { const t = p.x >= 690 ? frm : inf;
+        return {x: t.dx + p.x * t.k, y: t.dy + p.y * t.k,
+                w: p.w * t.k, h: (p.h || 0) * t.k}; };
+      fs = 16;      /* smaller invites iOS to zoom the page on focus */
+    }
+    const lh = map({x: A.msg.x, y: 0, w: A.msg.step}).w;  /* one rule-gap, scaled
+                                     (probed at the form's x so the phone picks
+                                      the form piece's scale, not the info's) */
+    /* a field's box hangs on its printed rule so the typing sits on the
+       line like handwriting */
+    const line = (id, p) => { const r = map(p);
+      const n = setbox(id, {x: r.x, y: r.y - lh + 4, w: r.w, h: lh});
+      n.style.fontSize = fs + "px"; n.style.lineHeight = lh + "px"; };
+    line("ct-name", A.name); line("ct-email", A.email);
+    const m0 = map({x: A.msg.x, y: A.msg.y, w: A.msg.w});
+    const ta = setbox("ct-msg", {x: m0.x, y: m0.y - lh + 4, w: m0.w,
+                                 h: lh * A.msg.lines});
+    ta.style.fontSize = (fs - 2) + "px"; ta.style.lineHeight = lh + "px";
+    const sb = map(A.send);
+    setbox("ct-send", sb).style.fontSize = (MOB ? 13 : 19) + "px";
+    setbox("ct-oops", {x: sb.x - 90, y: sb.y + sb.h + 10, w: sb.w + 180, h: 20});
+    setbox("ct-mail", map(A.mail));
+    setbox("ct-li", map(A.li)); setbox("ct-gh", map(A.gh)); setbox("ct-ig", map(A.ig));
+    return bottom;
+  };
+  placeContact();
+
+  /* send: the note goes out over FormSubmit's AJAX endpoint and lands in
+     the inbox printed on the card. The drawn button stays the button; the
+     .face only surfaces to say what happened. */
+  const cform = cEl("ct-form");
+  cform.addEventListener("submit", async ev => {
+    ev.preventDefault();
+    const name = cEl("ct-name"), email = cEl("ct-email"), msg = cEl("ct-msg"),
+          btn = cEl("ct-send"), face = btn.querySelector(".face"),
+          oops = cEl("ct-oops");
+    if (btn.classList.contains("sent") || btn.classList.contains("busy")) return;
+    for (const [f, ok] of [[email, /.+@.+\..+/.test(email.value)],
+                           [msg, msg.value.trim().length > 0]])
+      if (!ok) { f.focus(); return; }
+    btn.classList.add("busy"); face.textContent = "sending…";
+    oops.classList.remove("show");
+    try {
+      const r = await fetch("https://formsubmit.co/ajax/aashvi.geddam@gmail.com", {
+        method: "POST",
+        headers: {"Content-Type": "application/json", "Accept": "application/json"},
+        body: JSON.stringify({
+          name: name.value.trim() || "(no name)",
+          email: email.value.trim(),
+          message: msg.value,
+          _subject: "a note from your portfolio — " + (name.value.trim() || email.value.trim()),
+          _template: "table",
+          _honey: cform.elements._honey.value,
+        }),
+      });
+      if (!r.ok) throw new Error(r.status);
+      btn.classList.remove("busy"); btn.classList.add("sent");
+      face.textContent = "sent ♡";
+    } catch (err) {
+      btn.classList.remove("busy"); face.textContent = "";
+      oops.classList.add("show");
+    }
+  });
+}
+
 /* ---- below-the-fold artwork ---------------------------------------
    About and Work hold their images until they're wanted: when the section
    comes close, when a nav link or the notebook is hovered (so the book
@@ -1225,7 +1424,8 @@ const hydrate = root => {
   refitSoon();
 };
 const SECTIONS = {about: document.getElementById("about"),
-                  work:  document.getElementById("work")};
+                  work:  document.getElementById("work"),
+                  contact: document.getElementById("contact")};
 if (window.IntersectionObserver) {
   const io = new IntersectionObserver((entries, obs) => entries.forEach(e => {
     if (e.isIntersecting) { hydrate(e.target); obs.unobserve(e.target); }
@@ -1241,6 +1441,7 @@ const warm = (sel, which) => document.querySelectorAll(sel).forEach(el => {
 });
 warm('nav a[href="/about"], #notebook, #label-about', "about");
 warm('nav a[href="/work"]', "work");
+warm('nav a[href="/contact"]', "contact");
 /* a fifth of a screen of scrolling means About is on its way */
 addEventListener("scroll", () => {
   const y = scrollY, vh = innerHeight;
@@ -1285,6 +1486,8 @@ if (ROUTE === "about") {
   addEventListener("load", () => assembleAbout(), {once: true});
 } else if (ROUTE === "work") {
   hydrate(SECTIONS.work);
+} else if (ROUTE === "contact") {
+  hydrate(SECTIONS.contact);
 }
 addEventListener("load", fit);
 if (document.fonts && document.fonts.ready) document.fonts.ready.then(fit);
