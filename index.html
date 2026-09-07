@@ -1416,9 +1416,13 @@ if (document.getElementById("contact-canvas")) {
       setbox("ct-head", {x: hero.x + A.head.x * kh, y: hero.y + A.head.y * kh,
         w: A.head.w * kh, h: A.head.h * kh}).style.fontSize =
         Math.round(A.head.fs * kh) + "px";
-      const inf = piece("ct-info-m", M.info, hero.y + hero.h + M.gap);
-      const frm = piece("ct-form-m", M.form, inf.bottom + M.gap);
-      bottom = frm.bottom;
+      /* the writing half comes straight after the scene the heading sits on,
+         so a phone opens on the part you can actually use; the card's other
+         half - the name, the address, the find-me row - reads underneath.
+         On the desktop the two halves stay side by side as drawn. */
+      const frm = piece("ct-form-m", M.form, hero.y + hero.h + M.gap);
+      const inf = piece("ct-info-m", M.info, frm.bottom + M.gap);
+      bottom = inf.bottom;
       /* two crops, two maps: the artwork x says which piece a box is on */
       map = p => { const t = p.x >= 690 ? frm : inf;
         return {x: t.dx + p.x * t.k, y: t.dy + p.y * t.k,
