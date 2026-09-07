@@ -80,11 +80,10 @@ nav,nav a,nav .mono img{transition:color .35s ease,filter .35s ease}
 
 #whereabouts{text-align:center;font-size:13px;letter-spacing:.15em;line-height:2.05;
   text-transform:uppercase;color:#fff;text-shadow:0 1px 10px rgba(0,0,0,.42)}
-#whereabouts span{font-size:12px;letter-spacing:.12em;opacity:.9}
-/* the school name never splits: wide screens keep the line whole, narrow
-   ones break after the "@" instead of mid-name (opacity:1 so the nested
-   span does not fade twice) */
-#whereabouts .uw{white-space:nowrap;opacity:1}
+#whereabouts span{font-size:12px;letter-spacing:.12em;opacity:.9;white-space:nowrap}
+/* the line runs the width of a phone, so on the narrow canvas it sets a
+   size and tracking that still fit across it in one piece */
+body.mobile #whereabouts span{font-size:11px;letter-spacing:.06em}
 
 .doorlabel{font-size:22px;letter-spacing:.06em;text-transform:uppercase;
   text-align:center;text-shadow:0 1px 10px rgba(0,0,0,.4)}
@@ -375,7 +374,7 @@ body.mobile #ct-bg{display:none}
   <div class="item" id="soc-ig"></div>
 
   <div class="item" id="whereabouts">
-    Bay Area, CA<br><span>Cognitive Science @ <span class="uw">University of Washington, Seattle</span></span>
+    Bay Area, CA<br><span>Cognitive Science @ University of Washington, Seattle</span>
   </div>
 </div>
 </section>
@@ -556,7 +555,7 @@ const LAYOUT_M = {
   "soc-ig":          {x: 152, y: 1461, w:  58, h:  49},
   "soc-gh":          {x: 228, y: 1460, w:  54, h:  56},
   "soc-li":          {x: 300, y: 1457, w:  57, h:  54},
-  "whereabouts":     {x:  25, y: 1532, w: 380, h:  56},
+  "whereabouts":     {x:   0, y: 1532, w: 430, h:  56},
 };
 
 let MOB = matchMedia("(max-width: 900px)").matches;
