@@ -81,6 +81,10 @@ nav,nav a,nav .mono img{transition:color .35s ease,filter .35s ease}
 #whereabouts{text-align:center;font-size:13px;letter-spacing:.15em;line-height:2.05;
   text-transform:uppercase;color:#fff;text-shadow:0 1px 10px rgba(0,0,0,.42)}
 #whereabouts span{font-size:12px;letter-spacing:.12em;opacity:.9}
+/* the school name never splits: wide screens keep the line whole, narrow
+   ones break after the "@" instead of mid-name (opacity:1 so the nested
+   span does not fade twice) */
+#whereabouts .uw{white-space:nowrap;opacity:1}
 
 .doorlabel{font-size:22px;letter-spacing:.06em;text-transform:uppercase;
   text-align:center;text-shadow:0 1px 10px rgba(0,0,0,.4)}
@@ -371,7 +375,7 @@ body.mobile #ct-bg{display:none}
   <div class="item" id="soc-ig"></div>
 
   <div class="item" id="whereabouts">
-    Bay Area, CA<br><span>University of Washington, Seattle</span>
+    Bay Area, CA<br><span>Cognitive Science @ <span class="uw">University of Washington, Seattle</span></span>
   </div>
 </div>
 </section>
@@ -501,7 +505,7 @@ const LAYOUT = {
   "soc-ig":         {x: 636, y: 672, w:  58, h:  49, r:  2, href: "https://www.instagram.com/aashvigeddam/"},
   "soc-gh":         {x: 716, y: 671, w:  54, h:  56, r: -2, href: "https://github.com/aashvigeddam"},
   "soc-li":         {x: 804, y: 668, w:  57, h:  54, r:  3, href: "https://www.linkedin.com/in/aashvi-geddam"},
-  "whereabouts":    {x: 505, y: 762, w: 380, h:  56, r:  0},
+  "whereabouts":    {x: 455, y: 762, w: 480, h:  56, r:  0},
 };
 
 const ASSETS = {
