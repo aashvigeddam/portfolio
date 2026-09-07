@@ -67,21 +67,6 @@ nav .mono a{display:block}
 nav .mono img{height:84px;width:auto;display:block;
   filter:drop-shadow(0 1px 2px rgba(0,0,0,.55)) drop-shadow(0 2px 10px rgba(0,0,0,.35))}
 nav .links{position:absolute;right:44px;display:flex;gap:52px;text-transform:uppercase}
-/* The landing nav is white type over a bright photograph - sky behind it
-   sits around rgb(160,209,242), which reads at about 1.6:1. A scrim under
-   the row lifts it past the 4.5:1 the letters need: it sits inside the
-   nav's own stacking context, so it paints over the video and under the
-   letters, and rides along with the fixed bar as the page scrolls. It
-   holds full strength through the row before fading, because the fade
-   itself would drop the ratio under 4.5 where the text actually sits.
-   .45 was not enough: the brightest sky under the bar is nearer
-   rgb(204,242,251) than the rgb(160,209,242) it was measured from, and
-   that only reached 3.9:1. .55 measures 5.3:1 at the worst pixel.
-   The cream pages have contrast already and get no scrim. */
-body.route-home nav::before{content:"";position:absolute;z-index:-1;
-  left:0;right:0;top:-34px;height:150px;pointer-events:none;
-  background:linear-gradient(to bottom,rgba(0,0,0,.55) 0,
-    rgba(0,0,0,.55) 55%,rgba(0,0,0,0) 100%)}
 nav a{color:#fff;text-decoration:none;opacity:.92}
 nav a:hover{opacity:1;text-decoration:underline;text-underline-offset:5px}
 /* over the About/Work sections the fixed nav switches to ink blue */
@@ -159,7 +144,6 @@ body.mobile #whereabouts span{font-size:11px;letter-spacing:.05em}
   nav .name{left:18px;font-size:14px}
   nav .mono{display:none}
   nav .links{right:18px;gap:12px}
-  body.route-home nav::before{top:-18px;height:112px}
 }
 /* at 13px the links need the room a 13-letter name was taking, so the
    name steps aside a little earlier than it used to (was 360px) */
