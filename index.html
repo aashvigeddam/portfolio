@@ -126,6 +126,15 @@ body.mobile #whereabouts span{font-size:11px;letter-spacing:.06em}
 .device .screen{position:absolute;z-index:1;background:#0b0b0c;overflow:hidden}
 .device .screen video{width:100%;height:100%;object-fit:contain;display:block}
 
+/* between the phone layout and a roomy desktop the centre monogram and the
+   links grow into each other - tighten the row before they touch */
+@media (max-width:1120px) and (min-width:901px){
+  nav{font-size:15px}
+  nav .name{left:28px;font-size:20px}
+  nav .links{right:28px;gap:24px}
+  nav .mono img{height:72px}
+}
+
 @media (max-width:900px){
   nav{top:18px;font-size:11px}
   nav .name{left:16px;font-size:14px}
@@ -929,7 +938,16 @@ function fit(){
   for (const id of ["landing", "about", "work", "contact"]) {
     const e = document.getElementById(id); if (e) e.style.height = "";
   }
-  const s = Math.max(innerWidth / W, innerHeight / H);
+  /* The landing fills the window rather than fitting inside it, which is
+     right on a landscape screen - pieces run off the edges the way the
+     collage is drawn. On a portrait one, though, filling the height blows
+     the canvas up until the notebook and the camera fall off the sides,
+     and the notebook is a doorway. So cover, but never overscan past a
+     twelfth of the width on each side; the fixed background carries
+     whatever room is left. Landscape screens land on the same number as
+     before. */
+  const s = Math.min(Math.max(innerWidth / W, innerHeight / H),
+                     (innerWidth / W) * 1.2);
   canvas.style.transform = "translate(-50%,-50%) scale(" + s + ")";
   const a = Math.min(innerWidth / AW, innerHeight / AH);
   ac.style.transform = "translate(-50%,-50%) scale(" + a + ")";
