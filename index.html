@@ -1429,17 +1429,29 @@ if (document.getElementById("contact-canvas")) {
      the inbox printed on the card. The drawn button stays the button; the
      .face only surfaces to say what happened. */
   const cform = cEl("ct-form");
+  const coops = cEl("ct-oops");
+  /* the note-didn’t-send line and its mailto live in the markup; a rejected
+     field borrows the same spot, so keep the original to put back */
+  const oopsSendFailed = coops.innerHTML;
+  const oopsSay = txt => { coops.textContent = txt; coops.classList.add("show"); };
+  const oopsClear = () => coops.classList.remove("show");
+  /* fixing the field takes the complaint away */
+  for (const f of [cEl("ct-email"), cEl("ct-msg")])
+    f.addEventListener("input", oopsClear);
+
   cform.addEventListener("submit", async ev => {
     ev.preventDefault();
     const name = cEl("ct-name"), email = cEl("ct-email"), msg = cEl("ct-msg"),
-          btn = cEl("ct-send"), word = btn.querySelector(".word"),
-          oops = cEl("ct-oops");
+          btn = cEl("ct-send"), word = btn.querySelector(".word");
     if (btn.classList.contains("sent") || btn.classList.contains("busy")) return;
-    for (const [f, ok] of [[email, /.+@.+\..+/.test(email.value)],
-                           [msg, msg.value.trim().length > 0]])
-      if (!ok) { f.focus(); return; }
+    oopsClear();          /* each attempt starts clear of the last one */
+    /* a field that stops the send says why, rather than only taking focus
+       and leaving the visitor to guess */
+    for (const [f, ok, why] of [
+          [email, /.+@.+\..+/.test(email.value), "that email doesn’t look right"],
+          [msg,   msg.value.trim().length > 0,    "add a note before sending"]])
+      if (!ok) { oopsSay(why); f.focus(); return; }
     btn.classList.add("busy"); word.textContent = "sending…";
-    oops.classList.remove("show");
     try {
       const r = await fetch("https://formsubmit.co/ajax/aashvi.geddam@gmail.com", {
         method: "POST",
@@ -1460,7 +1472,8 @@ if (document.getElementById("contact-canvas")) {
       cform.reset();      /* the note is away - leave the card blank again */
     } catch (err) {
       btn.classList.remove("busy"); word.textContent = "";
-      oops.classList.add("show");
+      coops.innerHTML = oopsSendFailed;   /* back to the send-failed line */
+      coops.classList.add("show");
     }
   });
 }
