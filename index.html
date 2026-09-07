@@ -216,7 +216,12 @@ body.ab-hold .ab{opacity:0}
 #ab-intro{font-size:17px;line-height:1.62}
 #ab-intro p+p{margin-top:21px}
 #ab-exp{font-size:15.4px;line-height:1.5}
-#ab-exp .row{display:flex;gap:6px;align-items:flex-start;padding:9px 0}
+#ab-exp .row{display:flex;gap:6px;align-items:flex-start;padding:7px 0}
+/* the dates sit under the role in the same typewriter face, a size down and
+   in a lighter ink - Courier Prime carries one weight, so the ink is what
+   makes it read as the quieter line */
+#ab-exp .when{display:block;margin-top:2px;font-size:12.4px;line-height:1.25;
+  color:#807b76;letter-spacing:.015em}
 #ab-exp .row+.row{border-top:1.5px dashed #bbb6b2}
 #ab-exp .row img{flex:0 0 auto;margin-top:-3px}
 #ab-int{font-size:15.5px;line-height:1.4}
@@ -843,15 +848,14 @@ function assembleAbout() {
      z       resting stack order (higher = on top of the pile)      */
 const PATCH_AR = 0.865;   /* w/h of the patch artwork */
 const SKILLS = [
-  /* z runs high on the top row so each patch's printed name stays clear
-     as the pile stacks downward */
-  {name:"Figma",        patch:"assets/patches/figma.webp",   cx:118, cy: 68, w:82, r:-4, spread:[ -9,-17], pull:[ -5,-9], z:6},
-  {name:"Claude",       patch:"assets/patches/claude.webp",  cx:172, cy: 62, w:84, r: 3, spread:[  9,-18], pull:[  5,-9], z:7},
-  {name:"GitHub",       patch:"assets/patches/github.webp",  cx: 88, cy:128, w:82, r: 5, spread:[-20,  0], pull:[-11, 0], z:4},
-  {name:"Canva",        patch:"assets/patches/canva.webp",   cx:146, cy:124, w:88, r:-2, spread:[  0, -5], pull:[  0,-9], z:5},
-  {name:"ChatGPT",      patch:"assets/patches/chatgpt.webp", cx:204, cy:130, w:84, r: 4, spread:[ 20,  1], pull:[ 11, 1], z:3},
-  {name:"Google tools", patch:"assets/patches/google.webp",  cx:118, cy:192, w:82, r:-5, spread:[ -8, 17], pull:[ -5, 9], z:2},
-  {name:"Excel",        patch:"assets/patches/excel.webp",   cx:174, cy:196, w:84, r: 2, spread:[  8, 16], pull:[  5, 8], z:1},
+  /* four patches read as a square pile rather than a row with gaps in it:
+     two over two, centred in the box (145,125), each overlapping its
+     neighbours the way the seven used to. The top row keeps the higher z so
+     its printed names stay clear of the row stacking under them. */
+  {name:"Figma",        patch:"assets/patches/figma.webp",   cx:117, cy: 98, w:82, r:-4, spread:[-11,-13], pull:[ -6,-8], z:3},
+  {name:"Claude",       patch:"assets/patches/claude.webp",  cx:177, cy: 92, w:84, r: 3, spread:[ 11,-14], pull:[  6,-8], z:4},
+  {name:"GitHub",       patch:"assets/patches/github.webp",  cx:113, cy:160, w:82, r: 5, spread:[-12, 13], pull:[ -7, 7], z:1},
+  {name:"Canva",        patch:"assets/patches/canva.webp",   cx:173, cy:156, w:88, r:-2, spread:[ 11, 13], pull:[  6, 7], z:2},
 ];
 
 const skillsBox = document.getElementById("skills");
@@ -1116,17 +1120,19 @@ function placeAbout() {
 placeAbout();
 
 /* experience entries — edit here, first line company, second line role */
+/* organisation, role, then when - the dates are placeholders to fill in */
 const EXPERIENCE = [
-  ["Magnus United Non-profit,", "President"],
-  ["Child Rights and You (CRY),", "Stellar Hacks Operations Coordinator"],
-  ["SuiteEarth, Product Management &", "UX Intern"],
-  ["Donerds Donuts,", "Consultant"],
-  ["NYX Ventures,", "Research Intern"],
+  ["Magnus United Non-profit,", "President", "Month Year \u2014 Month Year"],
+  ["Child Rights and You (CRY),", "Stellar Hacks Operations Coordinator", "Month Year \u2014 Month Year"],
+  ["SuiteEarth, Product Management &", "UX Intern", "Month Year \u2014 Month Year"],
+  ["Donerds Donuts,", "Consultant", "Month Year \u2014 Month Year"],
+  ["NYX Ventures,", "Research Intern", "Month Year \u2014 Month Year"],
 ];
 const AB_STAR = '<img decoding="async" data-src="assets/about/star-row.webp" width="46" height="46" alt="" aria-hidden="true">';
 const expBox = document.getElementById("ab-exp");
-if (expBox) expBox.innerHTML = EXPERIENCE.map(([a,b]) =>
-  '<div class="row">' + AB_STAR + '<div>' + a + '<br>' + b + '</div></div>').join("");
+if (expBox) expBox.innerHTML = EXPERIENCE.map(([a, b, when]) =>
+  '<div class="row">' + AB_STAR + '<div>' + a + '<br>' + b +
+  '<span class="when">' + when + '</span></div></div>').join("");
 
 /* interests — same tiny diamond beside every item */
 const INTERESTS = ["designing","exploring","driving creativity","building community","giving back"];
