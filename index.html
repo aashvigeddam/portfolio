@@ -103,7 +103,7 @@ body.mobile #whereabouts span{font-size:11px;letter-spacing:.05em}
 
 /* the newest-work cards and their label are drawn with their shadows
    already in them, so they skip the one the collage pieces are given */
-#latest-seizure img,#latest-brainage img{filter:none}
+#latest-seizure img,#latest-brainage img,#latest-spark img{filter:none}
 #latest-seizure,#latest-brainage{cursor:pointer}
 .doorlabel{font-size:22px;letter-spacing:.04em;font-weight:600;text-transform:uppercase;
   text-align:center;text-shadow:0 1px 10px rgba(0,0,0,.4)}
@@ -377,6 +377,7 @@ body.mobile #ct-bg{display:none}
   </div>
   <div class="item doorlabel" id="label-exp">Offline</div>
 
+  <div class="item" id="latest-spark"></div>
   <div class="item" id="latest-seizure"></div>
   <div class="item" id="latest-brainage"></div>
   <div class="item doorlabel" id="label-cert">The Latest</div>
@@ -516,6 +517,9 @@ const LAYOUT = {
      of the camera column's centre line. Their overall widths differ
      because one carries sparks and the other does not, so the printed
      cards inside them come out the same size. */
+  /* the same three marks the lower card carries, off the upper one's
+     right edge so the pair sits evenly */
+  "latest-spark":   {x:1198, y: 436, w:  24, h:  41, r: 0},
   "latest-seizure": {x: 970, y: 429, w: 230, h:  96, r: 0, href: "https://github.com/aashvigeddam/seizure-protocols", blank: true},
   "latest-brainage":{x: 999, y: 539, w: 272, h:  96, r: 0, href: "https://brainage-calculator.vercel.app/", blank: true},
   "label-cert":     {x: 960, y: 686, w: 280, h:  30, r: 0},
@@ -555,6 +559,7 @@ const ASSETS = {
   "soc-ig": "assets/soc-ig.webp",
   "doodle-dragonfly": "assets/doodle-dragonfly.webp",
   "photo": "assets/photo.webp",
+  "latest-spark": "assets/latest-spark.webp",
   "latest-seizure": "assets/latest-seizure.webp",
   "latest-brainage": "assets/latest-brainage.webp",
   "scrap-hi": "assets/scrap-hi.webp",
@@ -587,6 +592,7 @@ const LAYOUT_M = {
   "label-about":     {x: 105, y:  836, w: 220, h:  30},
   "device":          {x:  65, y:  894, w: 300, h: 198},
   "label-exp":       {x:  65, y: 1104, w: 300, h:  30},
+  "latest-spark":    {x: 312, y: 1155, w:  25, h:  42},
   "latest-seizure":  {x:  77, y: 1148, w: 237, h:  99},
   "latest-brainage": {x:  95, y: 1261, w: 281, h: 100},
   "label-cert":      {x:  75, y: 1406, w: 280, h:  30},
