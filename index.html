@@ -581,6 +581,9 @@ const ASSETS = {
   "scrap-welcome": "assets/scrap-welcome.webp",
   deviceFrame: "assets/camera.webp",
   deviceVideo: "assets/experience-demo.mp4",
+  /* the video holds off loading until it is played, so the screen shows its
+     own opening frame in the meantime rather than an unlit panel */
+  devicePoster: "assets/experience-poster.webp",
   deviceScreen: {x: 0.0762, y: 0.3195, w: 0.4721, h: 0.5320},
 };
 
@@ -1594,7 +1597,9 @@ if (ASSETS.deviceFrame) {
     '<div class="screen" style="left:' +
     (s.x*100) + '%;top:' + (s.y*100) + '%;width:' + (s.w*100) + '%;height:' + (s.h*100) + '%">' +
     (ASSETS.deviceVideo
-      ? '<video muted loop playsinline preload="none" src="' + ASSETS.deviceVideo + '"></video>'
+      ? '<video muted loop playsinline preload="none"' +
+        (ASSETS.devicePoster ? ' poster="' + ASSETS.devicePoster + '"' : "") +
+        ' src="' + ASSETS.deviceVideo + '"></video>'
       : '') +
     '</div>' +
     '<img class="frame" src="' + ASSETS.deviceFrame + '" alt="">';
