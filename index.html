@@ -103,7 +103,8 @@ body.mobile #whereabouts span{font-size:11px;letter-spacing:.05em}
 
 /* the newest-work cards and their label are drawn with their shadows
    already in them, so they skip the one the collage pieces are given */
-#latest-seizure img,#latest-brainage img,#label-cert img{filter:none}
+#latest-seizure img,#latest-brainage img{filter:none}
+#latest-seizure,#latest-brainage{cursor:pointer}
 .doorlabel{font-size:22px;letter-spacing:.04em;font-weight:600;text-transform:uppercase;
   text-align:center;text-shadow:0 1px 10px rgba(0,0,0,.4)}
 
@@ -378,7 +379,7 @@ body.mobile #ct-bg{display:none}
 
   <div class="item" id="latest-seizure"></div>
   <div class="item" id="latest-brainage"></div>
-  <div class="item" id="label-cert"></div>
+  <div class="item doorlabel" id="label-cert">The Latest</div>
 
   <div class="item" id="soc-mail"></div>
   <div class="item" id="soc-li"><div class="ph">LI</div></div>
@@ -511,13 +512,13 @@ const LAYOUT = {
   "doodle-airplane":{x: 831, y: 382, w: 100, h: 100, r:  0},
   "device":         {x: 960, y: 176, w: 300, h: 198, r:  0},
   "label-exp":      {x: 960, y: 382, w: 300, h:  30, r:  0},
-  /* the two newest projects, each on its own doily, sharing the camera
-     column's centre line at x 1110. Their overall widths differ because
-     one carries sparks and the other does not, so the printed cards
-     inside them come out the same size. */
-  "latest-seizure": {x: 975, y: 429, w: 271, h: 113, r:  0},
-  "latest-brainage":{x: 950, y: 554, w: 320, h: 113, r:  0},
-  "label-cert":     {x:1000, y: 686, w: 221, h:  34, r:  0},
+  /* the two newest projects, each on its own doily, stepped either side
+     of the camera column's centre line. Their overall widths differ
+     because one carries sparks and the other does not, so the printed
+     cards inside them come out the same size. */
+  "latest-seizure": {x: 970, y: 429, w: 230, h:  96, r: 0, href: "https://github.com/aashvigeddam/seizure-protocols", blank: true},
+  "latest-brainage":{x: 999, y: 539, w: 272, h:  96, r: 0, href: "https://brainage-calculator.vercel.app/", blank: true},
+  "label-cert":     {x: 960, y: 686, w: 280, h:  30, r: 0},
   /* charm boxes sized so the icon BODIES render equal — each PNG carries a
      different amount of clasp/dangle around the body */
   "soc-mail":       {x: 533, y: 669, w:  69, h:  54, r: -3, href: "mailto:aashvi.geddam@gmail.com"},
@@ -531,7 +532,6 @@ const ITEM_ALT = {
   "photo": "Aashvi Geddam outdoors, framing her face with her hands",
   "latest-seizure": "ML Seizure Detection \u2014 detects seizures from EEG data",
   "latest-brainage": "Brain Age Calculator \u2014 estimates brain age from MRI",
-  "label-cert": "The latest",
 };
 const ITEM_LINK_LABEL = {
   "soc-mail": "Email Aashvi", "soc-li": "LinkedIn",
@@ -557,7 +557,6 @@ const ASSETS = {
   "photo": "assets/photo.webp",
   "latest-seizure": "assets/latest-seizure.webp",
   "latest-brainage": "assets/latest-brainage.webp",
-  "label-cert": "assets/latest-label.webp",
   "scrap-hi": "assets/scrap-hi.webp",
   "scrap-welcome": "assets/scrap-welcome.webp",
   deviceFrame: "assets/camera.webp",
@@ -588,9 +587,9 @@ const LAYOUT_M = {
   "label-about":     {x: 105, y:  836, w: 220, h:  30},
   "device":          {x:  65, y:  894, w: 300, h: 198},
   "label-exp":       {x:  65, y: 1104, w: 300, h:  30},
-  "latest-seizure":  {x:  76, y: 1148, w: 279, h: 116},
-  "latest-brainage": {x:  50, y: 1276, w: 330, h: 117},
-  "label-cert":      {x: 100, y: 1406, w: 230, h:  35},
+  "latest-seizure":  {x:  77, y: 1148, w: 237, h:  99},
+  "latest-brainage": {x:  95, y: 1261, w: 281, h: 100},
+  "label-cert":      {x:  75, y: 1406, w: 280, h:  30},
   "soc-mail":        {x:  66, y: 1458, w:  69, h:  54},
   "soc-ig":          {x: 152, y: 1461, w:  58, h:  49},
   "soc-gh":          {x: 228, y: 1460, w:  54, h:  56},
@@ -616,7 +615,8 @@ function placeLanding() {
       const img = '<img src="' + ASSETS[id] + '" alt="' + (ITEM_ALT[id] || "") + '">';
       const label = ITEM_LINK_LABEL[id];
       el.innerHTML = p.href
-        ? '<a href="' + p.href + '"' + (label ? ' aria-label="' + label + '"' : "") + ">" + img + "</a>"
+        ? '<a href="' + p.href + '"' + (label ? ' aria-label="' + label + '"' : "") +
+          (p.blank ? ' target="_blank" rel="noopener"' : "") + ">" + img + "</a>"
         : img;
     }
   }
