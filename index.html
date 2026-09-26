@@ -145,6 +145,9 @@ body.mobile #canvas,body.mobile #about-canvas,body.mobile #work-canvas,body.mobi
   top:0;left:0;transform-origin:0 0}
 body.mobile #landing,body.mobile #about,body.mobile #work,body.mobile #contact{height:auto}
 body.mobile #wk-bg img{object-fit:cover}
+/* bg-wide's bottom edge carries mirrored twins of the caption cards; a
+   tall screen (iPad portrait) reaches down to them, so trim them off */
+body:not(.mobile) #wk-bg{clip-path:inset(0 0 44px 0)}
 body.mobile #work .wk-bgfull{display:none}
 
 @media (prefers-reduced-motion:reduce){ .bg video{display:none} }
