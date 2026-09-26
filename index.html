@@ -230,6 +230,19 @@ body.ab-hold .ab{opacity:0}
    The lace sheet is larger than the screenshot, so the card's exact
    shape never has to line up with anything underneath. */
 .wk-lace img{width:100%;height:100%;display:block}
+/* the Magnus Map project has moved down off the Magnus United sheet,
+   which still carries a scrap of the old Magnus Map card along its foot */
+/* the gap between Brain Age and CueLens widened, so the edges of their
+   sheets that used to meet now fade into the water between them */
+body:not(.mobile) #wk-lace-brainage{
+  -webkit-mask-image:linear-gradient(90deg,#000 calc(100% - 16px),transparent);
+  mask-image:linear-gradient(90deg,#000 calc(100% - 16px),transparent)}
+body:not(.mobile) #wk-lace-cuelens{
+  -webkit-mask-image:linear-gradient(90deg,transparent,#000 10px);
+  mask-image:linear-gradient(90deg,transparent,#000 10px)}
+body:not(.mobile) #wk-lace-magnus{
+  -webkit-mask-image:linear-gradient(180deg,#000 330px,transparent 342px);
+  mask-image:linear-gradient(180deg,#000 330px,transparent 342px)}
 .wk-card{transform:rotate(var(--ang,0deg))}
 .wk-card img{width:100%;height:100%;object-fit:cover;display:block;border-radius:10px}
 .wk-pin img{width:100%;height:100%;display:block;
@@ -1133,30 +1146,30 @@ const PROJECTS = [
    title:"Magnus United<br>Website Redesign", desc:"Coming Soon"},
 
   {id:"brainage", laceImg:"assets/work/lace-brainage.png", cardImg:"assets/work/card-brainage.jpg", href:"https://brainage-calculator.vercel.app/",
-   lace:{x: 186, y: 564, w: 434, h: 248},
-   card:{x: 205, y: 590, w: 374, h: 192, ang: 0},
-   pin: {x: 203.9, y: 590},
-   label:{x: 296, y: 786, w: 234, h:  88, padTop: 12},
+   lace:{x: 162, y: 584, w: 434, h: 248},
+   card:{x: 181, y: 610, w: 374, h: 192, ang: 0},
+   pin: {x: 179.9, y: 610},
+   label:{x: 272, y: 806, w: 234, h:  88, padTop: 12},
    title:"Brain Age Calculator", desc:"Estimates brain age from<br>structural MRI measurements."},
 
   {id:"cuelens", laceImg:"assets/work/lace-airesearch.png", cardImg:"assets/work/card-cuelens.jpg",
    href:"https://cuelensai.vercel.app/",
-   lace:{x: 606, y: 576, w: 340, h: 244},
+   lace:{x: 606, y: 596, w: 340, h: 244},
    /* this sheet came printed with its own blank card and a pin; the card is
       the paper the screenshot sits on and the pin on it is its pin */
    /* squared up to the paper's own cut, which leans 1.4deg, and centred on
       it rather than on the sheet. The pin is a piece of its own here so the
       screenshot passes under it instead of across it. */
-   card:{x: 638, y: 614, w: 306, h: 182, ang: -0.8},
+   card:{x: 638, y: 634, w: 306, h: 182, ang: -0.8},
    pin: null, overImg:"assets/work/pin-cuelens.png",
-   label:{x: 657, y: 789, w: 238, h: 82, padTop: 12},
+   label:{x: 657, y: 809, w: 238, h: 82, padTop: 12},
    title:"CueLens", desc:"AI-powered interface review<br>for conflicting visual cues."},
 
   {id:"magnusmap", laceImg:"assets/work/lace-magnusmap.png", cardImg:"assets/work/card-magnusmap.jpg", href:"https://aashvigeddam.github.io/magnus-map/",
-   lace:{x: 986, y: 546, w: 464, h: 266},
-   card:{x:1017, y: 574, w: 402, h: 208, ang: 0},
-   pin: {x:1015.9, y: 574},
-   label:{x:1104, y: 780, w: 220, h:  92, padTop: 12},
+   lace:{x:1010, y: 566, w: 464, h: 266},
+   card:{x:1041, y: 594, w: 402, h: 208, ang: 0},
+   pin: {x:1039.9, y: 594},
+   label:{x:1128, y: 800, w: 220, h:  92, padTop: 12},
    title:"Magnus Map", desc:"Model of Magnus United’s<br>internal operations tool."},
 ];
 /* On a phone the four projects come down the page one after another.
